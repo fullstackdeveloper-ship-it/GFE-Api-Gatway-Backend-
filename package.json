@@ -1,0 +1,42 @@
+{
+  "name": "green-project-backend",
+  "version": "1.0.0",
+  "description": "Green Project Backend - Network Management and Monitoring System",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js",
+    "test": "node test-console-logging.js",
+    "test-network": "node test-network-manager.js",
+    "test-nats": "node test-nats.js",
+    "test-socket": "node test-socket.js"
+  },
+  "keywords": [
+    "network",
+    "management",
+    "monitoring",
+    "debian",
+    "ifupdown",
+    "websocket",
+    "nats"
+  ],
+  "author": "Green Project Team",
+  "license": "MIT",
+  "dependencies": {
+    "child_process": "^1.0.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "joi": "^18.0.0",
+    "nats": "^2.19.0",
+    "serialport": "^12.0.0",
+    "socket.io": "^4.7.2",
+    "winston": "^3.11.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
