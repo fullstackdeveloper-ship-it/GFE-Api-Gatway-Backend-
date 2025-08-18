@@ -274,7 +274,7 @@ registers:
   address: 30021
   function_code: 0x04
   format: UINT16
-  channel_access: RO
+  channel_access: WO
   channel_type: timeseries
   aggregation_method: last
   scale: 1.0
