@@ -17,7 +17,7 @@ class NetworkManager {
     this.interfacesFile = '/etc/network/interfaces';
     this.interfacesDir = '/etc/network/interfaces.d';
     this.resolvConf = '/etc/resolv.conf';
-    this.managedInterfaces = ['eth1', 'eth2'];
+    this.managedInterfaces = ['eth1', 'wifi'];
     this.defaultDns = ['8.8.8.8', '1.1.1.1'];
     
     consoleLog(`📁 Configuration paths:`);
@@ -78,7 +78,7 @@ class NetworkManager {
     // Ensure managedInterfaces is valid
     if (!this.managedInterfaces || !Array.isArray(this.managedInterfaces)) {
       consoleLog(`⚠️ managedInterfaces not set, using defaults`, 'WARNING');
-      this.managedInterfaces = ['eth1', 'eth2'];
+      this.managedInterfaces = ['eth1', 'wifi'];
     }
   
     if (!this.managedInterfaces.includes(interfaceName)) {
@@ -165,6 +165,145 @@ class NetworkManager {
     } catch (error) {
       consoleLog(`❌ Error getting runtime info for ${interfaceName}: ${error}`, 'ERROR');
       return { ip: '', subnet: '', gateway: '', dns: [] };
+    }
+  }
+
+  /**
+   * Check if interface has local/link connectivity
+   * @param {string} interfaceName - Interface name (eth1, eth2, etc.)
+   * @returns {Promise<{connected: boolean, details: string}>}
+   */
+  async checkLocalConnectivity(interfaceName) {
+    consoleLog(`🔗 Checking local connectivity for ${interfaceName}...`);
+    
+    try {
+      // Check if interface is up
+      const { stdout: linkStdout } = await execAsync(`ip -j link show dev ${interfaceName}`);
+      const linkData = JSON.parse(linkStdout);
+      
+      if (!linkData.length) {
+        consoleLog(`   ❌ Interface ${interfaceName} not found`);
+        return { connected: false, details: 'Interface not found' };
+      }
+      
+      const linkState = linkData[0].operstate;
+      consoleLog(`   📡 Link state: ${linkState}`);
+      
+      if (linkState !== 'UP') {
+        consoleLog(`   ❌ Interface ${interfaceName} is not UP (state: ${linkState})`);
+        return { connected: false, details: `Interface state: ${linkState}` };
+      }
+      
+      // Check if interface has an IP address
+      const runtimeInfo = await this.getRuntimeInfo(interfaceName);
+      if (!runtimeInfo.ip) {
+        consoleLog(`   ❌ Interface ${interfaceName} has no IP address`);
+        return { connected: false, details: 'No IP address assigned' };
+      }
+      
+      consoleLog(`   ✅ Interface ${interfaceName} is UP with IP ${runtimeInfo.ip}`);
+      
+      // Try to ping gateway if available
+      if (runtimeInfo.gateway) {
+        try {
+          consoleLog(`   🔍 Testing gateway connectivity: ${runtimeInfo.gateway}`);
+          await execAsync(`ping -c 1 -W 2 -I ${interfaceName} ${runtimeInfo.gateway}`, { timeout: 5000 });
+          consoleLog(`   ✅ Gateway ${runtimeInfo.gateway} is reachable`);
+          return { connected: true, details: `Connected to gateway ${runtimeInfo.gateway}` };
+        } catch (error) {
+          consoleLog(`   ⚠️ Gateway ${runtimeInfo.gateway} not reachable: ${error.message}`);
+          return { connected: true, details: `Connected (IP: ${runtimeInfo.ip}) but gateway unreachable` };
+        }
+      }
+      
+      return { connected: true, details: `Connected (IP: ${runtimeInfo.ip})` };
+      
+    } catch (error) {
+      consoleLog(`❌ Error checking local connectivity for ${interfaceName}: ${error.message}`, 'ERROR');
+      return { connected: false, details: `Error: ${error.message}` };
+    }
+  }
+
+  /**
+   * Check if interface can reach the internet
+   * @param {string} interfaceName - Interface name (eth1, eth2, etc.)
+   * @returns {Promise<{reachable: boolean, details: string}>}
+   */
+  async checkInternetReachability(interfaceName) {
+    consoleLog(`🌐 Checking internet reachability for ${interfaceName}...`);
+    
+    try {
+      // First check if interface is locally connected
+      const localStatus = await this.checkLocalConnectivity(interfaceName);
+      if (!localStatus.connected) {
+        consoleLog(`   ❌ Interface ${interfaceName} not locally connected`);
+        return { reachable: false, details: 'Not locally connected' };
+      }
+      
+      // Test DNS resolution
+      try {
+        consoleLog(`   🔍 Testing DNS resolution...`);
+        await execAsync(`nslookup google.com`, { timeout: 5000 });
+        consoleLog(`   ✅ DNS resolution working`);
+      } catch (error) {
+        consoleLog(`   ❌ DNS resolution failed: ${error.message}`);
+        return { reachable: false, details: 'DNS resolution failed' };
+      }
+      
+      // Test connectivity to public IP (8.8.8.8)
+      try {
+        consoleLog(`   🔍 Testing public IP connectivity: 8.8.8.8`);
+        await execAsync(`ping -c 1 -W 3 -I ${interfaceName} 8.8.8.8`, { timeout: 8000 });
+        consoleLog(`   ✅ Public IP 8.8.8.8 is reachable`);
+      } catch (error) {
+        consoleLog(`   ❌ Public IP 8.8.8.8 not reachable: ${error.message}`);
+        return { reachable: false, details: 'Public IP unreachable' };
+      }
+      
+      // Test connectivity to a domain (google.com)
+      try {
+        consoleLog(`   🔍 Testing domain connectivity: google.com`);
+        await execAsync(`ping -c 1 -W 3 -I ${interfaceName} google.com`, { timeout: 8000 });
+        consoleLog(`   ✅ Domain google.com is reachable`);
+        return { reachable: true, details: 'Internet accessible' };
+      } catch (error) {
+        consoleLog(`   ⚠️ Domain google.com not reachable: ${error.message}`);
+        return { reachable: true, details: 'Internet accessible (IP only)' };
+      }
+      
+    } catch (error) {
+      consoleLog(`❌ Error checking internet reachability for ${interfaceName}: ${error.message}`, 'ERROR');
+      return { reachable: false, details: `Error: ${error.message}` };
+    }
+  }
+
+  /**
+   * Get comprehensive connectivity status for an interface
+   * @param {string} interfaceName - Interface name (eth1, eth2, etc.)
+   * @returns {Promise<{local: {connected: boolean, details: string}, internet: {reachable: boolean, details: string}}>}
+   */
+  async getConnectivityStatus(interfaceName) {
+    consoleLog(`🔍 Getting comprehensive connectivity status for ${interfaceName}...`);
+    
+    try {
+      const [localStatus, internetStatus] = await Promise.all([
+        this.checkLocalConnectivity(interfaceName),
+        this.checkInternetReachability(interfaceName)
+      ]);
+      
+      consoleLog(`   📊 ${interfaceName} - Local: ${localStatus.connected ? '✅' : '❌'}, Internet: ${internetStatus.reachable ? '✅' : '❌'}`);
+      
+      return {
+        local: localStatus,
+        internet: internetStatus
+      };
+      
+    } catch (error) {
+      consoleLog(`❌ Error getting connectivity status for ${interfaceName}: ${error.message}`, 'ERROR');
+      return {
+        local: { connected: false, details: `Error: ${error.message}` },
+        internet: { reachable: false, details: `Error: ${error.message}` }
+      };
     }
   }
   
@@ -538,12 +677,15 @@ class NetworkManager {
       for (const interfaceName of allInterfaces) {
         try {
           const info = await this.getInterfaceInfo(interfaceName);
+          const connectivity = await this.getConnectivityStatus(interfaceName);
+          
           results.push({
             name: interfaceName,
             ip: info.ip || '',
             subnet: info.subnet || '',
             gateway: info.gateway || '',
-            dns: info.dns || []
+            dns: info.dns || [],
+            connectivity: connectivity
           });
         } catch {
           results.push({
@@ -551,7 +693,11 @@ class NetworkManager {
             ip: '',
             subnet: '',
             gateway: '',
-            dns: []
+            dns: [],
+            connectivity: {
+              local: { connected: false, details: 'Error getting interface info' },
+              internet: { reachable: false, details: 'Error getting interface info' }
+            }
           });
         }
       }

@@ -1,0 +1,55 @@
+devices_list:
+  - device_name: adasdasd
+    reference: HYBRID_INVERTER-MODEL-001
+    protocol: modbus_rtu
+    interface: serial_1
+    device_id: 324234
+    response_timeout: 32432
+    byte_timeout: 23
+  - device_name: testing 1
+    reference: GENSET_CONTROLLER-MODEL-001
+    protocol: modbus_tcp
+    interface: wifi
+    device_id: 222
+    response_timeout: 0.5
+    device_ip: 192.2.3.4
+    tcp_port: 502
+    keep_tcp_seasion_open: false
+    cocurrent_access: false
+  - device_name: dasdad
+    reference: BMS-MODEL-001
+    protocol: modbus_rtu
+    interface: serial_2
+    device_id: 22
+    response_timeout: 0.5
+    byte_timeout: 0.5
+  - device_name: dasdasddasda
+    reference: HYBRID_INVERTER-MODEL-001
+    protocol: modbus_tcp
+    interface: eth1
+    device_id: 23
+    response_timeout: 0.5
+    device_ip: 192.168.1.2
+    tcp_port: 502
+    keep_tcp_seasion_open: true
+    cocurrent_access: false
+  - device_name: dasdasddads
+    reference: PCS-MODEL-001
+    protocol: modbus_tcp
+    interface: eth1
+    device_id: 22
+    response_timeout: 0.5
+    device_ip: 192.168.2.3
+    tcp_port: 502
+    keep_tcp_seasion_open: true
+    cocurrent_access: true
+  - device_name: Testing Ali
+    reference: BMS-MODEL-001
+    protocol: modbus_tcp
+    interface: eth1
+    device_id: 222
+    response_timeout: 0.5
+    device_ip: 192.1.4.5
+    tcp_port: 502
+    keep_tcp_seasion_open: true
+    cocurrent_access: true

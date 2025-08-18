@@ -13,31 +13,49 @@ const BLUEPRINTS_DIR = process.env.BLUEPRINTS_DIR;
 router.get('/', async (req, res) => {
   try {
     const data = await readYaml(DEVICE_LIST_PATH);
+    const devices = data.devices_list || [];
 
-    const grouped = {};
-    for (const dev of data.devices_list) {
-      grouped[dev.interface] = grouped[dev.interface] || [];
-      grouped[dev.interface].push(dev);
-    }
-
-    let references = [];
+    // Load all blueprints once
+    let referenceMap = {};
     try {
       const files = await fs.readdir(BLUEPRINTS_DIR);
       const yamlFiles = files.filter(f => f.endsWith('.yaml'));
 
       for (const file of yamlFiles) {
         const blueprint = await readYaml(path.join(BLUEPRINTS_DIR, file));
-        if (blueprint?.header?.reference) {
-          references.push(blueprint.header.reference);
+        const ref = blueprint?.header?.reference;
+        const type = blueprint?.header?.device_type;
+        if (ref && type) {
+          referenceMap[ref] = type;
         }
       }
     } catch (err) {
-      console.error('Blueprint read error:', err.message);
+      console.error('Error reading blueprint files:', err.message);
     }
 
-    res.json({ devices: grouped, references });
+    // Group and enrich devices
+    const grouped = {};
+    for (const dev of devices) {
+      const iface = dev.interface || 'unknown';
+      const ref = dev.reference;
+      const type = referenceMap[ref] || null;
+
+      const enrichedDevice = {
+        ...dev,
+        device_type: type
+      };
+
+      grouped[iface] = grouped[iface] || [];
+      grouped[iface].push(enrichedDevice);
+    }
+
+    res.json({
+      devices: grouped,
+      references: Object.keys(referenceMap)
+    });
   } catch (err) {
-    res.status(500).json({ error: 'Failed to read devices list', details: err.message });
+    console.error('Device list error:', err.message);
+    res.status(500).json({ error: 'Failed to load devices', details: err.message });
   }
 });
 
@@ -146,11 +164,23 @@ router.delete('/:deviceName', async (req, res) => {
 // --- GET blueprint by reference ---
 router.get('/blueprint/:reference', async (req, res) => {
   try {
-    const file = path.join(BLUEPRINTS_DIR, `${req.params.reference}.yaml`);
-    const data = await readYaml(file);
-    res.json(data);
+    const blueprintFiles = await fs.readdir(BLUEPRINTS_DIR);
+    const yamlFiles = blueprintFiles.filter(file => file.endsWith('.yaml'));
+
+    for (const file of yamlFiles) {
+      const fullPath = path.join(BLUEPRINTS_DIR, file);
+      const blueprint = await readYaml(fullPath);
+
+      if (blueprint?.header?.reference === req.params.reference) {
+        return res.json(blueprint);
+      }
+    }
+
+    // If no matching reference was found
+    return res.status(404).json({ error: `Blueprint with reference "${req.params.reference}" not found.` });
   } catch (err) {
-    res.status(404).json({ error: `Blueprint "${req.params.reference}" not found.` });
+    console.error('Blueprint search error:', err.message);
+    res.status(500).json({ error: 'Failed to search blueprints', details: err.message });
   }
 });
 

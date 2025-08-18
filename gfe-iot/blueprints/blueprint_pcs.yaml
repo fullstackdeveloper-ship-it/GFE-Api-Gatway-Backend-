@@ -1,0 +1,1944 @@
+header:
+  device_type: pcs
+  device_vendor: GenericVendor
+  reference: PCS-MODEL-001
+  protocol: modbus_tcp
+  byte_order: big
+  word_order: big
+
+metadata:
+  nominal_power: 10000
+
+registers:
+- id: 908e2912-0463-45af-a1f9-83186631f127
+  short_name: A
+  long_name: AC current
+  description: AC current
+  address: 30001
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+
+- id: b37a127b-b5a9-4087-a737-d83bfc0d4dd9
+  short_name: AphA
+  long_name: AC current on phase A
+  description: AC current on phase A
+  address: 30002
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 7f781e1e-a302-4c51-b0cd-8b8abe9803b2
+  short_name: AphB
+  long_name: AC current on phase B
+  description: AC current on phase B
+  address: 30003
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: e9462054-68d4-4629-88b1-171b5d230a3e
+  short_name: AphC
+  long_name: AC current on phase C
+  description: AC current on phase C
+  address: 30004
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 15634e52-d0d8-41c2-9ff0-2fd2c0e7004b
+  short_name: DCA
+  long_name: DC Current
+  description: DC Current
+  address: 30005
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 22d7fc69-33ba-4abb-86a6-ccd728ec102f
+  short_name: DCV
+  long_name: DC Voltage
+  description: DC Voltage
+  address: 30006
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: d7484872-2193-45db-bfe6-a967d550cb6a
+  short_name: DCW
+  long_name: DC power
+  description: DC power
+  address: 30007
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 233ad7ac-ae7b-47b7-a901-2ae210345f0a
+  short_name: Hz
+  long_name: AC frequency
+  description: AC frequency
+  address: 30008
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: a817175b-a24f-49bc-bfe2-02c9f7f44ef3
+  short_name: HzphA
+  long_name: AC frequency on phase A
+  description: AC frequency on phase A
+  address: 30009
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: b1c2c5b8-3292-4349-aa7b-47dd423d18b6
+  short_name: HzphB
+  long_name: AC frequency on phase B
+  description: AC frequency on phase B
+  address: 30010
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: ea948b2a-6071-432f-a496-a56ad649be69
+  short_name: HzphC
+  long_name: AC frequency on phase C
+  description: AC frequency on phase C
+  address: 30011
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 58eafe4f-2640-4ce8-8661-542d2a365cbd
+  short_name: PF
+  long_name: Power factor
+  description: Power factor
+  address: 30012
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 65704493-d45f-488c-8c9b-eedbdbc14fc0
+  short_name: PFPhA
+  long_name: Power factor on phase A
+  description: Power factor on phase A
+  address: 30013
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 111cc5c2-4415-416b-b86d-2ed0cc4e1ce7
+  short_name: PFPhB
+  long_name: Power factor on phase B
+  description: Power factor on phase B
+  address: 30014
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+  
+- id: 617a4d1f-1dd7-455b-aac8-388d4a00ad8d
+  short_name: PFPhC
+  long_name: Power factor on phase C
+  description: Power factor on phase C
+  address: 30015
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: fb829396-43ee-4833-a7e7-96ca2c3d135b
+  short_name: PhVphA
+  long_name: AC voltage phase A to Neutral
+  description: AC voltage phase A to Neutral
+  address: 30016
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: cf4f1613-b37e-43cf-81fd-2fb3cbf382c1
+  short_name: PhVphB
+  long_name: AC voltage phase B to Neutral
+  description: AC voltage phase B to Neutral
+  address: 30017
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 9d04b40d-e3b2-4bb6-ae22-0ba215dff11e
+  short_name: PhVphC
+  long_name: AC voltage phase C to Neutral
+  description: AC voltage phase C to Neutral
+  address: 30018
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 0e97a66e-cec7-40f1-9f25-95effc8633df
+  short_name: Tmp
+  long_name: Temperature
+  description: Temperature
+  address: 30019
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: d86e8f0e-5b33-4553-8551-d7604889ed08
+  short_name: Eff
+  long_name: Efficiency
+  description: Efficiency
+  address: 30020
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: last
+  scale: 1.0
+
+- id: 736e3635-7e8c-475a-b563-cdcc03490d5e
+  short_name: VA
+  long_name: AC apparent power
+  description: AC apparent power
+  address: 30021
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 637dd685-9209-435b-97d0-c21040da2b1c
+  short_name: VAR
+  long_name: AC reactive power
+  description: AC reactive power
+  address: 30022
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 9e72b276-4d06-4a70-b3f2-b4fc149abaf2
+  short_name: VAphA
+  long_name: AC apparent power on phase A
+  description: AC apparent power on phase A
+  address: 30023
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: f7fa5440-cdad-4958-9c7d-1075f034f3d8
+  short_name: VAphB
+  long_name: AC apparent power on phase B
+  description: AC apparent power on phase B
+  address: 30024
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 9c82ec74-b4d8-4682-82c6-c0e79a0649f6
+  short_name: VAphC
+  long_name: AC apparent power on phase C
+  description: AC apparent power on phase C
+  address: 30025
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 743f802c-91e5-479b-a470-5599a59e4cef
+  short_name: VARphA
+  long_name: AC reactive power on phase A
+  description: AC reactive power on phase A
+  address: 30026
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+  
+- id: e73c3602-fa4d-46fc-b1c1-b3496ef4b954
+  short_name: VARphB
+  long_name: AC reactive power on phase B
+  description: AC reactive power on phase B
+  address: 30027
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: c791d908-7ffb-44a0-a6d1-41640aee61fe
+  short_name: VARphC
+  long_name: AC reactive power on phase C
+  description: AC reactive power on phase C
+  address: 30028
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 4036d304-964b-4627-bbb0-4a16a887920b
+  short_name: W
+  long_name: AC total active power
+  description: AC total active power
+  address: 30029
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 6be3c260-28d3-46b2-aad5-dc308cd6bf96
+  short_name: WphA
+  long_name: AC active power on phase A
+  description: AC active power on phase A
+  address: 30030
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: e1c3f86b-ee8f-4818-8973-dd52f58084fd
+  short_name: WphB
+  long_name: AC active power on phase B
+  description: AC active power on phase B
+  address: 30031
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 687a7794-e886-4321-8bad-dccb91506fe0
+  short_name: WphC
+  long_name: AC active power on phase C
+  description: AC active power on phase C
+  address: 30032
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 8e5d286e-1402-4e6b-ae83-2983408165ff
+  short_name: WMax
+  long_name: Active Power Max Setting (%Age)
+  description: Active Power Max Setting (%Age)
+  address: 30033
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 6f631ae6-7812-4b9d-bc17-5afe78de663a
+  short_name: VARSet
+  long_name: Reactive Power Max Setting
+  description: Reactive Power Max Setting
+  address: 30034
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: persistent
+  aggregation_method: average
+  scale: 1.0
+
+- id: 9405fd3b-7e3f-4f4e-a4c0-9cc18f9cbc83
+  short_name: WSet
+  long_name: Active Power Setpoint
+  description: Active Power Setpoint
+  address: 30035
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: persistent
+  aggregation_method: average
+  scale: 1.0
+
+- id: 6fea29ce-fd78-4148-bdef-061e35a87a7f
+  short_name: WCtlModeSet
+  long_name: 'Set Active Power Control Mode '
+  description: 'Set Active Power Control Mode '
+  address: 30036
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: persistent
+  aggregation_method: average
+  scale: 1.0
+
+- id: 95596f55-0176-482d-b28e-34ae4e10b31c
+  short_name: VARCtlModeSet
+  long_name: 'Set Reactive Power Control Mode '
+  description: 'Set Reactive Power Control Mode '
+  address: 30037
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: persistent
+  aggregation_method: average
+  scale: 1.0
+
+- id: 1c5dad94-6e3f-4c24-b02b-e845f2aadab2
+  short_name: WHPos
+  long_name: Total Positive Energy
+  description: Total Positive Energy
+  address: 30038
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: last
+  scale: 1.0
+
+- id: 2643b487-a2b5-4e74-999e-9170354d9632
+  short_name: WHPosDaily
+  long_name: Daily Positve Energy
+  description: Daily Positve Energy
+  address: 30039
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: last
+  scale: 1.0
+
+- id: 681ffe8e-25ca-4fb2-8465-22fe06444a93
+  short_name: WHNeg
+  long_name: Total Negative Energy
+  description: Total Negative Energy
+  address: 30040
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: last
+  scale: 1.0
+
+- id: 3cc567d3-3c89-4c15-bf3e-5dd48bdc63f7
+  short_name: WHNegDaily
+  long_name: Daily Negative Energy
+  description: Daily Negative Energy
+  address: 30041
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: last
+  scale: 1.0
+
+- id: c096eb29-71b6-4384-afc2-3fbebd64f9e4
+  short_name: Mode
+  long_name: Operating Mode
+  description: Operating Mode
+  address: 30042
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: persistent
+  aggregation_method: last
+  scale: 1.0
+  
+- id: 5c01ffba-fe58-4cfd-b842-1c021f5950f4
+  short_name: ModeSet
+  long_name: Set Operating Mode
+  description: Set Operating Mode
+  address: 30043
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: persistent
+  aggregation_method: last
+  scale: 1.0
+
+- id: 5e6962a0-59e9-45bd-8c2e-c12bdfca511b
+  short_name: StBk
+  long_name: Device Breaker Status
+  description: Device Breaker Status
+  address: 30044
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: persistent
+  aggregation_method: last
+  scale: 1.0
+
+- id: 1c96ebf2-585b-4be3-b4fb-ba1e5d6a81a8
+  short_name: St
+  long_name: Operating state
+  description: Operating state
+  address: 30045
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: persistent
+  aggregation_method: last
+  scale: 1.0
+
+- id: 5e6026fc-0eed-47cc-a145-ee0176c45d81
+  short_name: SoC
+  long_name: State of Charge
+  description: State of Charge
+  address: 30046
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 3e46b297-2b0e-457a-a77d-05b670571d82
+  short_name: SoH
+  long_name: State of Health
+  description: State of Health
+  address: 30047
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 0dd59804-3f72-4ddd-a36b-c7dd1ede3fca
+  short_name: DCA1
+  long_name: DC Current on string 1
+  description: DC Current on string 1
+  address: 30048
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 9d0855a6-1e8e-433d-a2fa-76088c40419a
+  short_name: DCA2
+  long_name: DC Current on string 2
+  description: DC Current on string 2
+  address: 30049
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: f070d5a3-290f-42ba-87f0-40f0b52050f2
+  short_name: DCA3
+  long_name: DC Current on string 3
+  description: DC Current on string 3
+  address: 30050
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 552dc78a-fa06-4e0b-913c-14ed1d0525ed
+  short_name: DCA4
+  long_name: DC Current on string 4
+  description: DC Current on string 4
+  address: 30051
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 329e31c3-0bf1-41b6-9862-c1d3fa88990c
+  short_name: DCA5
+  long_name: DC Current on string 5
+  description: DC Current on string 5
+  address: 30052
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 55eab6d5-e917-45c1-b145-155756350d03
+  short_name: DCA6
+  long_name: DC Current on string 6
+  description: DC Current on string 6
+  address: 30053
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 608804e2-21dc-42b9-ad6f-6bceeb8de989
+  short_name: DCA7
+  long_name: DC Current on string 7
+  description: DC Current on string 7
+  address: 30054
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+  
+- id: 4dec1bf0-cbda-4347-8832-d5fc86690da9
+  short_name: DCA8
+  long_name: DC Current on string 8
+  description: DC Current on string 8
+  address: 30055
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 4aa29f22-30bf-442d-ad16-c2d7f182cf4a
+  short_name: DCA9
+  long_name: DC Current on string 9
+  description: DC Current on string 9
+  address: 30056
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: cc84d853-df9d-4147-959d-714f8fd74744
+  short_name: DCA10
+  long_name: DC Current on string 10
+  description: DC Current on string 10
+  address: 30057
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 42e43598-f536-4b81-af31-e5e9eb217fe6
+  short_name: DCA11
+  long_name: DC Current on string 11
+  description: DC Current on string 11
+  address: 30058
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 520c2e96-6ad9-43a7-bd54-a22f84a42e87
+  short_name: DCA12
+  long_name: DC Current on string 12
+  description: DC Current on string 12
+  address: 30059
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 7eee6800-2a26-4d1d-955b-c1cb0801b6be
+  short_name: DCA13
+  long_name: DC Current on string 13
+  description: DC Current on string 13
+  address: 30060
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+  
+- id: 0d4edfb5-27d8-4725-9660-f65b870057d5
+  short_name: DCA14
+  long_name: DC Current on string 14
+  description: DC Current on string 14
+  address: 30061
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 44cc91f2-308b-4ad7-a0bb-75188b261678
+  short_name: DCA15
+  long_name: DC Current on string 15
+  description: DC Current on string 15
+  address: 30062
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: a6c466dd-abb3-4a90-a6c3-c02c969b5f77
+  short_name: DCA16
+  long_name: DC Current on string 16
+  description: DC Current on string 16
+  address: 30063
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 513d807d-5e5b-4197-8a48-8fff42cc8862
+  short_name: DCA17
+  long_name: DC Current on string 17
+  description: DC Current on string 17
+  address: 30064
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 55a2c774-e0e5-438f-87a5-b5fe642311f9
+  short_name: DCA18
+  long_name: DC Current on string 18
+  description: DC Current on string 18
+  address: 30065
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 6977b8a6-8a9a-4d79-a482-c01d7a797c38
+  short_name: DCA19
+  long_name: DC Current on string 19
+  description: DC Current on string 19
+  address: 30066
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 9f49a8cf-f2a7-4731-829f-82e8994c24c1
+  short_name: DCA20
+  long_name: DC Current on string 20
+  description: DC Current on string 20
+  address: 30067
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 6dbe53b2-e20e-4cdc-bdec-d6679ce022bf
+  short_name: DCA21
+  long_name: DC Current on string 21
+  description: DC Current on string 21
+  address: 30068
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: bcd941b7-ab3c-4d9d-86c2-e36264954fcb
+  short_name: DCA22
+  long_name: DC Current on string 22
+  description: DC Current on string 22
+  address: 30069
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 90c2d32c-27c4-4cf6-a9a0-010763ddc7c4
+  short_name: DCA23
+  long_name: DC Current on string 23
+  description: DC Current on string 23
+  address: 30070
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 2327e677-16b0-45c4-86b9-f9d615e4d9a1
+  short_name: DCA24
+  long_name: DC Current on string 24
+  description: DC Current on string 24
+  address: 30071
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: cc027284-0185-4dfa-8749-b6fa3312b3a0
+  short_name: DCV1
+  long_name: DC Voltage on string 1
+  description: DC Voltage on string 1
+  address: 30072
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: e023b666-e32b-4ec3-a926-3e06116bf923
+  short_name: DCV2
+  long_name: DC Voltage on string 2
+  description: DC Voltage on string 2
+  address: 30073
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: d8702d42-54aa-44a2-8ac7-f86ecb3e30ae
+  short_name: DCV3
+  long_name: DC Voltage on string 3
+  description: DC Voltage on string 3
+  address: 30074
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+  
+- id: 8f4a4c2f-c0d1-436c-b328-c162de2a42b2
+  short_name: DCV4
+  long_name: DC Voltage on string 4
+  description: DC Voltage on string 4
+  address: 30075
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 64da73ad-a97d-4d1c-a87c-fc9469e193cb
+  short_name: DCV5
+  long_name: DC Voltage on string 5
+  description: DC Voltage on string 5
+  address: 30076
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 64d5bf15-9481-4423-bd9b-f9d3e6b4fbd0
+  short_name: DCV6
+  long_name: DC Voltage on string 6
+  description: DC Voltage on string 6
+  address: 30077
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 82511de1-a385-42bf-8cd7-a6d0226a12c3
+  short_name: DCV7
+  long_name: DC Voltage on string 7
+  description: DC Voltage on string 7
+  address: 30078
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: c3c69309-7e1e-4057-8eb8-62da35e91250
+  short_name: DCV8
+  long_name: DC Voltage on string 8
+  description: DC Voltage on string 8
+  address: 30079
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 896a9647-c044-4650-baf0-73d59631426a
+  short_name: DCV9
+  long_name: DC Voltage on string 9
+  description: DC Voltage on string 9
+  address: 30080
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: ee8fc1b7-9fbf-4fa1-b260-284163938e37
+  short_name: DCV10
+  long_name: DC Voltage on string 10
+  description: DC Voltage on string 10
+  address: 30081
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: b22f40d9-a892-41af-a8b9-a22d6fe2cd01
+  short_name: DCV11
+  long_name: DC Voltage on string 11
+  description: DC Voltage on string 11
+  address: 30082
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 35207781-611f-43b1-a1ad-c35c4a97a9d1
+  short_name: DCV12
+  long_name: DC Voltage on string 12
+  description: DC Voltage on string 12
+  address: 30083
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+  
+- id: b16ef95b-ea46-4c97-a97e-20cc77980c79
+  short_name: DCV13
+  long_name: DC Voltage on string 13
+  description: DC Voltage on string 13
+  address: 30084
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 0a06797d-accc-4838-b9b6-006373b603ee
+  short_name: DCV14
+  long_name: DC Voltage on string 14
+  description: DC Voltage on string 14
+  address: 30085
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+  
+- id: 926bcaab-b405-4ecd-bb37-21032de528ac
+  short_name: DCV15
+  long_name: DC Voltage on string 15
+  description: DC Voltage on string 15
+  address: 30086
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: a21f06fb-51d6-4234-b913-a4e0abe973f7
+  short_name: DCV16
+  long_name: DC Voltage on string 16
+  description: DC Voltage on string 16
+  address: 30087
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: c93d8f54-2562-42bd-8c5d-186f7a02742b
+  short_name: DCV17
+  long_name: DC Voltage on string 17
+  description: DC Voltage on string 17
+  address: 30088
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+  
+- id: 971d97a1-d607-439a-a53d-97889da7405d
+  short_name: DCV18
+  long_name: DC Voltage on string 18
+  description: DC Voltage on string 18
+  address: 30089
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 66ec3f70-75ff-4daa-b098-2002274dbb13
+  short_name: DCV19
+  long_name: DC Voltage on string 19
+  description: DC Voltage on string 19
+  address: 30090
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 2ec5ef55-ea57-4d75-baed-5e9780bd1390
+  short_name: DCV20
+  long_name: DC Voltage on string 20
+  description: DC Voltage on string 20
+  address: 30091
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: f6dfb97c-c631-4f09-b61c-f993f5af7b9f
+  short_name: DCV21
+  long_name: DC Voltage on string 21
+  description: DC Voltage on string 21
+  address: 30092
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: c849c098-483f-4d95-bb5f-dc95848cc7c7
+  short_name: DCV22
+  long_name: DC Voltage on string 22
+  description: DC Voltage on string 22
+  address: 30093
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: bb05ef37-1022-44e6-b779-e5179d5ac8be
+  short_name: DCV23
+  long_name: DC Voltage on string 23
+  description: DC Voltage on string 23
+  address: 30094
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: c4bbe6c3-89c3-441a-8228-4294b505a9b3
+  short_name: DCV24
+  long_name: DC Voltage on string 24
+  description: DC Voltage on string 24
+  address: 30095
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: b11ff0f9-af2d-4a58-aa61-6159d49d0f12
+  short_name: DCV25
+  long_name: DC Voltage on string 25
+  description: DC Voltage on string 25
+  address: 30096
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 8c27885f-a6cc-48a8-8d5d-dd69ffd2a302
+  short_name: DCV26
+  long_name: DC Voltage on string 26
+  description: DC Voltage on string 26
+  address: 30097
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 94085863-0802-49d8-b323-3524589e977e
+  short_name: DCV27
+  long_name: DC Voltage on string 27
+  description: DC Voltage on string 27
+  address: 30098
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 3bcb887d-d45d-4d4e-9c72-07315f9124e5
+  short_name: DCV28
+  long_name: DC Voltage on string 28
+  description: DC Voltage on string 28
+  address: 30099
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: e0a420c3-86ba-4ab5-8cbf-7c34ac4cc242
+  short_name: DCAMPPT1
+  long_name: DC Current on MPPT 1
+  description: DC Current on MPPT 1
+  address: 30100
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 673aed69-05a9-4ed1-8bf5-fab16f83d0a4
+  short_name: DCAMPPT2
+  long_name: DC Current on MPPT 2
+  description: DC Current on MPPT 2
+  address: 30101
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: e6fc92a3-2df5-4c5d-926e-8869fa8685bb
+  short_name: DCAMPPT3
+  long_name: DC Current on MPPT 3
+  description: DC Current on MPPT 3
+  address: 30102
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+  
+- id: 875db394-6e39-4959-bd58-58fbde771664
+  short_name: DCAMPPT4
+  long_name: DC Current on MPPT 4
+  description: DC Current on MPPT 4
+  address: 30103
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 589ed356-0611-4f57-a987-a03800168578
+  short_name: DCAMPPT5
+  long_name: DC Current on MPPT 5
+  description: DC Current on MPPT 5
+  address: 30104
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 64eadbcc-8b65-4147-a38f-4620b3a67fc2
+  short_name: DCAMPPT6
+  long_name: DC Current on MPPT 6
+  description: DC Current on MPPT 6
+  address: 30105
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: abbbc510-b1f0-4eae-9b34-27079f311f68
+  short_name: DCAMPPT7
+  long_name: DC Current on MPPT 7
+  description: DC Current on MPPT 7
+  address: 30106
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 4498cd5d-cf10-400f-938a-62bc2cd3642c
+  short_name: DCAMPPT8
+  long_name: DC Current on MPPT 8
+  description: DC Current on MPPT 8
+  address: 30107
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: b4fd2fb6-fa2d-4e40-8453-573a7911572f
+  short_name: DCAMPPT9
+  long_name: DC Current on MPPT 9
+  description: DC Current on MPPT 9
+  address: 30108
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: b82116fd-40d1-4e5a-b42e-c4e563e90616
+  short_name: DCAMPPT10
+  long_name: DC Current on MPPT 10
+  description: DC Current on MPPT 10
+  address: 30109
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 27567768-a78a-4662-80fd-bc394027ac2b
+  short_name: DCAMPPT11
+  long_name: DC Current on MPPT 11
+  description: DC Current on MPPT 11
+  address: 30110
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 76703014-72d1-4f8b-9c74-08be19d60346
+  short_name: DCAMPPT12
+  long_name: DC Current on MPPT 12
+  description: DC Current on MPPT 12
+  address: 30111
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 51949065-c540-45b6-9c90-e6c10ad67268
+  short_name: DCAMPPT13
+  long_name: DC Current on MPPT 13
+  description: DC Current on MPPT 13
+  address: 30112
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 23247b0e-f133-4887-928c-bb15883930e0
+  short_name: DCAMPPT14
+  long_name: DC Current on MPPT 14
+  description: DC Current on MPPT 14
+  address: 30113
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 10a811ff-7257-4a05-97a4-2e2236819e2b
+  short_name: DCVMPPT1
+  long_name: DC Voltage on MPPT 1
+  description: DC Voltage on MPPT 1
+  address: 30114
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: c3b3ad7b-9b60-4690-a021-4ddcf3c34330
+  short_name: DCVMPPT2
+  long_name: DC Voltage on MPPT 2
+  description: DC Voltage on MPPT 2
+  address: 30115
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 377671c0-1137-4b3e-9831-51c5645a1ce7
+  short_name: DCVMPPT3
+  long_name: DC Voltage on MPPT 3
+  description: DC Voltage on MPPT 3
+  address: 30116
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 55a621ed-05fb-42d7-b1b0-2beda8f9ad0c
+  short_name: DCVMPPT4
+  long_name: DC Voltage on MPPT 4
+  description: DC Voltage on MPPT 4
+  address: 30117
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 551c442f-964c-48b4-80e3-a06c48338518
+  short_name: DCVMPPT5
+  long_name: DC Voltage on MPPT 5
+  description: DC Voltage on MPPT 5
+  address: 30118
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 627401f9-9e3d-4715-9e40-b86f5fdad971
+  short_name: DCVMPPT6
+  long_name: DC Voltage on MPPT 6
+  description: DC Voltage on MPPT 6
+  address: 30119
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: dbf307db-c15f-4b40-ab00-1a329edcf8a1
+  short_name: DCVMPPT7
+  long_name: DC Voltage on MPPT 7
+  description: DC Voltage on MPPT 7
+  address: 30120
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 2eac880c-5988-45b1-8b6d-e49e12591678
+  short_name: DCVMPPT8
+  long_name: DC Voltage on MPPT 8
+  description: DC Voltage on MPPT 8
+  address: 30121
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 92c8e91a-906b-4dc1-89f7-50c2c493676e
+  short_name: DCVMPPT9
+  long_name: DC Voltage on MPPT 9
+  description: DC Voltage on MPPT 9
+  address: 30122
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 34a75650-f8a7-4e5b-b2b2-a8903a4d30fb
+  short_name: DCVMPPT10
+  long_name: DC Voltage on MPPT 10
+  description: DC Voltage on MPPT 10
+  address: 30123
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 9dec1206-58ad-4fb2-9122-7bf4742cab29
+  short_name: DCVMPPT11
+  long_name: DC Voltage on MPPT 11
+  description: DC Voltage on MPPT 11
+  address: 30124
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+  
+- id: 766d7ec0-3c40-4739-ab77-a4678f183c50
+  short_name: DCVMPPT12
+  long_name: DC Voltage on MPPT 12
+  description: DC Voltage on MPPT 12
+  address: 30125
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 7cc81e68-69c4-4510-9e2d-b3e9d990f3c6
+  short_name: DCVMPPT13
+  long_name: DC Voltage on MPPT 13
+  description: DC Voltage on MPPT 13
+  address: 30126
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 988fe543-5bc9-4f22-b85b-f10c147cff16
+  short_name: DCVMPPT14
+  long_name: DC Voltage on MPPT 14
+  description: DC Voltage on MPPT 14
+  address: 30127
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: ab8a6e9d-ea2b-4e11-b288-556160df6fc5
+  short_name: DCWMPPT1
+  long_name: DC power on MPPT 1
+  description: DC power on MPPT 1
+  address: 30128
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 44f9c19c-403f-4e80-a608-06059fb7f5c1
+  short_name: DCWMPPT2
+  long_name: DC power on MPPT 2
+  description: DC power on MPPT 2
+  address: 30129
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+  
+- id: 0d7f589d-f6fa-4b66-8182-fa33f1d4e1fe
+  short_name: DCWMPPT3
+  long_name: DC power on MPPT 3
+  description: DC power on MPPT 3
+  address: 30130
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: a84bbac6-0318-480a-8480-c1c5fd82276d
+  short_name: DCWMPPT4
+  long_name: DC power on MPPT 4
+  description: DC power on MPPT 4
+  address: 30131
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: c1f822f6-99f9-47a3-8c58-3bc5d77ad8f6
+  short_name: DCWMPPT5
+  long_name: DC power on MPPT 5
+  description: DC power on MPPT 5
+  address: 30132
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 9690c3cc-8f26-400b-85c2-fd120722281b
+  short_name: DCWMPPT6
+  long_name: DC power on MPPT 6
+  description: DC power on MPPT 6
+  address: 30133
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 22ab57c2-6cc5-4cc8-8662-426557cf8f27
+  short_name: DCWMPPT7
+  long_name: DC power on MPPT 7
+  description: DC power on MPPT 7
+  address: 30134
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: ee02129c-c598-4d71-b483-db11505534b9
+  short_name: DCWMPPT8
+  long_name: DC power on MPPT 8
+  description: DC power on MPPT 8
+  address: 30135
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 2c57c7ab-6704-4b23-8ff4-9cae3446d02b
+  short_name: DCWMPPT9
+  long_name: DC power on MPPT 9
+  description: DC power on MPPT 9
+  address: 30136
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 45ca51ed-7d67-45e2-8a16-31da63763ca0
+  short_name: DCWMPPT10
+  long_name: DC power on MPPT 10
+  description: DC power on MPPT 10
+  address: 30137
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 8ef2282b-800f-4ff1-a481-98053ca2f189
+  short_name: DCWMPPT11
+  long_name: DC power on MPPT 11
+  description: DC power on MPPT 11
+  address: 30138
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 56f0f822-936b-4712-a0db-686fc83c5256
+  short_name: DCWMPPT12
+  long_name: DC power on MPPT 12
+  description: DC power on MPPT 12
+  address: 30139
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: 696d5141-66f4-4ad3-8c4d-ed1b234995ea
+  short_name: DCWMPPT13
+  long_name: DC power on MPPT 13
+  description: DC power on MPPT 13
+  address: 30140
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: d5c257bd-451b-4102-bab9-41848557556d
+  short_name: DCWMPPT14
+  long_name: DC power on MPPT 14
+  description: DC power on MPPT 14
+  address: 30141
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+
+- id: b7133e0a-5145-4da4-8f3e-44b833ccd93a
+  short_name: DC_OVER_VOLT
+  long_name: DC Overvoltage
+  description: DC Overvoltage
+  address: 30142
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: persistent
+  aggregation_method: average
+  scale: 1.0
+
+- id: 1db1d3d1-ff70-445b-b7ec-6ca6ca9dba23
+  short_name: DC_OVER_VOLT_PV1
+  long_name: DC Overvolatge on PV line 1
+  description: DC Overvolatge on PV line 1
+  address: 30143
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: persistent
+  aggregation_method: average
+  scale: 1.0
+  
+- id: 31a49ee8-14a4-4e6b-8490-fd021470f7ee
+  short_name: DC_OVER_VOLT_PV2
+  long_name: DC Overvolatge on PV line 2
+  description: DC Overvolatge on PV line 2
+  address: 30144
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: persistent
+  aggregation_method: average
+  scale: 1.0
+
+- id: 79d31f34-4ffe-4cfb-99c6-d859e3c5dc1e
+  short_name: AC_DISCONNECT
+  long_name: AC disconnect open
+  description: AC disconnect open
+  address: 30145
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: persistent
+  aggregation_method: average
+  scale: 1.0
+
+- id: 29d6b72d-7d1b-4d35-9f63-03fb6d6c9270
+  short_name: GRID_DISCONNECT
+  long_name: Grid shutdown
+  description: Grid shutdown
+  address: 30146
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: persistent
+  aggregation_method: average
+  scale: 1.0
+
+- id: e260cc0d-6e7d-461a-879c-22aea607b31b
+  short_name: MANUAL_SHUTDOWN
+  long_name: Manual shutdown
+  description: Manual shutdown
+  address: 30147
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: persistent
+  aggregation_method: average
+  scale: 1.0
+
+- id: 45d08574-4578-451b-a0d6-77b4779b8708
+  short_name: OVER_TEMP
+  long_name: Over temperature
+  description: Over temperature
+  address: 30148
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: persistent
+  aggregation_method: average
+  scale: 1.0
+  
+- id: e4ebc7fe-b434-4bfa-8196-9d8a0e892c0f
+  short_name: OVER_FREQUENCY
+  long_name: Frequency above limit
+  description: Frequency above limit
+  address: 30149
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: persistent
+  aggregation_method: average
+  scale: 1.0
+
+- id: 36914459-e10a-48f9-91f0-0d61d4e451de
+  short_name: UNDER_FREQUENCY
+  long_name: Frequency under limit
+  description: Frequency under limit
+  address: 30150
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: persistent
+  aggregation_method: average
+  scale: 1.0
+
+- id: dd74e844-57e0-4064-af13-abf2a5aeda6d
+  short_name: AC_OVER_VOLT
+  long_name: AC Voltage above limit
+  description: AC Voltage above limit
+  address: 30151
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: persistent
+  aggregation_method: average
+  scale: 1.0
+
+- id: 483e86bc-a9ac-4c62-a986-0dc744ff99d6
+  short_name: AC_OVER_VOLT_A
+  long_name: AC Voltage above limit on phase A
+  description: AC Voltage above limit on phase A
+  address: 30152
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: persistent
+  aggregation_method: average
+  scale: 1.0
+
+- id: e6393224-b3c6-4d4e-a811-ff41a9714a61
+  short_name: AC_OVER_VOLT_B
+  long_name: AC Voltage above limit on phase B
+  description: AC Voltage above limit on phase B
+  address: 30153
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: persistent
+  aggregation_method: average
+  scale: 1.0
+
+- id: 8819c8df-7cf7-44cf-88ee-4f31db146cb2
+  short_name: AC_OVER_VOLT_C
+  long_name: AC Voltage above limit on phase C
+  description: AC Voltage above limit on phase C
+  address: 30154
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: persistent
+  aggregation_method: average
+  scale: 1.0
+
+- id: d6201e32-6144-4b46-9242-08e52af3280f
+  short_name: AC_UNDER_VOLT
+  long_name: AC Voltage under limit
+  description: AC Voltage under limit
+  address: 30155
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: persistent
+  aggregation_method: average
+  scale: 1.0
+
+- id: fe0ff721-6852-4c37-884f-fd4a321fa23d
+  short_name: AC_UNDER_VOLT_A
+  long_name: AC Voltage under limit on phase A
+  description: AC Voltage under limit on phase A
+  address: 30156
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: persistent
+  aggregation_method: average
+  scale: 1.0
+
+- id: 87543542-29ab-42cf-96d3-a7cc58ccf31f
+  short_name: AC_UNDER_VOLT_B
+  long_name: AC Voltage under limit on phase B
+  description: AC Voltage under limit on phase B
+  address: 30157
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: persistent
+  aggregation_method: average
+  scale: 1.0
+
+- id: 0d429467-6b09-4c72-b144-783159512698
+  short_name: AC_UNDER_VOLT_C
+  long_name: AC Voltage under limit on phase C
+  description: AC Voltage under limit on phase C
+  address: 30158
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: persistent
+  aggregation_method: average
+  scale: 1.0
+  
+- id: 3e3a10b2-78db-4adb-9f8b-18a065e3516b
+  short_name: UNDER_TEMP
+  long_name: Under temperature
+  description: Under temperature
+  address: 30159
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: persistent
+  aggregation_method: average
+  scale: 1.0
+  
+- id: cf710e94-29fe-4c8d-b06d-1eabb369605f
+  short_name: MEMORY_LOSS
+  long_name: Generic Memory or Communication error (internal)
+  description: Generic Memory or Communication error (internal)
+  address: 30160
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: persistent
+  aggregation_method: average
+  scale: 1.0
+
+- id: 7d3bc013-e8d1-40a8-b8bd-fa548772edca
+  short_name: HW_TEST_FAILURE
+  long_name: Hardware test failure
+  description: Hardware test failure
+  address: 30161
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: persistent
+  aggregation_method: average
+  scale: 1.0

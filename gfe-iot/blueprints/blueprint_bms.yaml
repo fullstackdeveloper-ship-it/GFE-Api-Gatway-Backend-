@@ -1,0 +1,307 @@
+header:
+  device_type: bms
+  device_vendor: GenericVendor
+  reference: BMS-MODEL-001
+  protocol: modbus_rtu
+  byte_order: big
+  word_order: big
+
+registers:
+- id: f0888923-97d0-45ff-9591-7a2bc6ae0b9e
+  short_name: DCA
+  long_name: DC Current
+  description: DC Current
+  address: 30001
+  function_code: 0x04
+  format: uint16
+  channel_access: rO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+  unit: A
+
+- id: 42b37ae1-378b-4733-880f-531cfae8b058
+  short_name: DCV
+  long_name: DC Voltage
+  description: DC Voltage
+  address: 30002
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+  unit: V
+
+- id: c6787e14-4a44-4e81-8a7b-6d2791fcd8ee
+  short_name: DCW
+  long_name: DC power
+  description: DC power
+  address: 30003
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+  unit: W
+  
+- id: de00ba32-9e31-42f5-b4f3-602531d783f9
+  short_name: Tmp
+  long_name: Temperature
+  description: Temperature
+  address: 30004
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+  unit: °C
+
+- id: f55b3176-67bf-43bd-8ddc-f1ec7270ed9a
+  short_name: Eff
+  long_name: Efficiency
+  description: Efficiency
+  address: 30005
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: last
+  scale: 1.0
+  unit: "%"
+
+- id: e30280dd-673a-4e74-a4fb-e4160153963f
+  short_name: VA
+  long_name: AC apparent power
+  description: AC apparent power
+  address: 30006
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+  unit: VA
+
+- id: 9f93e3ab-7931-4f08-b635-01572c899c25
+  short_name: VAR
+  long_name: AC reactive power
+  description: AC reactive power
+  address: 30007
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+  unit: VAR
+
+- id: ac886cd9-e4f5-472d-8199-0f0946a1ae37
+  short_name: VAphA
+  long_name: AC apparent power on phase A
+  description: AC apparent power on phase A
+  address: 30008
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+  unit: VA
+
+- id: cbe304e3-693f-41f0-8b21-14cc9338cbf8
+  short_name: VAphB
+  long_name: AC apparent power on phase B
+  description: AC apparent power on phase B
+  address: 30009
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0  
+  unit: VA
+
+- id: d6dab412-325a-4507-a45a-c5969a3439ab
+  short_name: VAphC
+  long_name: AC apparent power on phase C
+  description: AC apparent power on phase C
+  address: 30010
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+  unit: VA
+
+- id: ad8bb3ad-3c67-4d8a-97da-b55de70d6b14
+  short_name: VARphA
+  long_name: AC reactive power on phase A
+  description: AC reactive power on phase A
+  address: 30011
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+  unit: VAR
+
+- id: b91837ef-0bd9-4a86-86f0-5ce4f1072bcc
+  short_name: VARphB
+  long_name: AC reactive power on phase B
+  description: AC reactive power on phase B
+  address: 30012
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+  unit: VAR
+
+- id: 88fcd833-61ae-43b0-8311-6e0a553d5b42
+  short_name: VARphC
+  long_name: AC reactive power on phase C
+  description: AC reactive power on phase C
+  address: 30013
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+  unit: VAR
+
+- id: 9f6a100a-92aa-49ea-aac9-a99f6cb64b02
+  short_name: W
+  long_name: AC total active power
+  description: AC total active power
+  address: 30014
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+  unit: W
+
+- id: 2ca03497-e64f-489d-a102-c99b55debd40
+  short_name: WphA
+  long_name: AC active power on phase A
+  description: AC active power on phase A
+  address: 30015
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+  unit: W
+
+- id: 89501975-c9e0-481a-a568-08ebd075ccbe
+  short_name: WphB
+  long_name: AC active power on phase B
+  description: AC active power on phase B
+  address: 30016
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0  
+  unit: W
+
+- id: 1e7553d8-ca53-4c4f-b335-8ff383ca1e5b
+  short_name: WphC
+  long_name: AC active power on phase C
+  description: AC active power on phase C
+  address: 30017
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+  unit: W
+
+- id: dab3d80a-a558-4128-b5ef-e1caf92414e4
+  short_name: WMax
+  long_name: Active Power Max Setting (%Age)
+  description: Active Power Max Setting (%Age)
+  address: 30018
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1.0
+  unit: "%"
+
+- id: eab3d80a-a558-4128-b5ef-e1caf92414e4
+  short_name: VARSet
+  long_name: Reactive Power Max Setting
+  description: Reactive Power Max Setting
+  address: 0x1000
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: persistent
+  aggregation_method: average
+  scale: 1.0  
+  unit: VAR
+
+- id: 78398b09-6141-4b6e-b749-6451608ea337
+  short_name: WHPos
+  long_name: Total Positive Energy
+  description: Total Positive Energy
+  address: 30020
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: last
+  scale: 1.0
+  unit: Wh
+
+- id: efe38540-e69d-418d-bfd3-400d0be3f8b7
+  short_name: WHPosDaily
+  long_name: Daily Positve Energy
+  description: Daily Positve Energy
+  address: 30021
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: last
+  scale: 1.0
+  unit: Wh
+
+- id: ea9d5e08-53c5-4aa2-83b2-638f221350a4
+  short_name: WHNeg
+  long_name: Total Negative Energy
+  description: Total Negative Energy
+  address: 30022
+  function_code: 0x04
+  format: UINT16
+  channel_access: WO
+  channel_type: timeseries
+  aggregation_method: last
+  scale: 1.0
+  unit: Wh
+  
+- id: 5527725e-5b83-4c4e-9bf9-9253df0acd62
+  short_name: WHNegDaily
+  long_name: Daily Negative Energy
+  description: Daily Negative Energy
+  address: 30023
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: last
+  scale: 1.0
+  unit: Wh

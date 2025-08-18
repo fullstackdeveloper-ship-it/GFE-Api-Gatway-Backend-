@@ -1,0 +1,11 @@
+devices_list:
+  - device_name: test
+    reference: TEST-MODEL-001
+    protocol: modbus_tcp
+    interface: eth1
+    device_ip: 192.168.100.203
+    tcp_port: 502
+    device_id: 1
+    response_timeout: 0.5
+    keep_tcp_session_open: false
+    concurrent_access: false

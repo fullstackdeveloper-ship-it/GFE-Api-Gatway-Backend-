@@ -248,6 +248,68 @@ app.put('/api/serial-ports/:portName', (req, res) => {
   app._router.handle(req, res);
 });
 
+// Connectivity Status API Routes
+app.get('/net/connectivity', async (req, res) => {
+  try {
+    const onlyParam = req.query.only;
+    if (onlyParam) {
+      // Filter by specific interfaces
+      const requestedInterfaces = onlyParam.split(',').map(iface => iface.trim());
+      const results = {};
+      
+      for (const iface of requestedInterfaces) {
+        if (networkManager.managedInterfaces && Array.isArray(networkManager.managedInterfaces) && networkManager.managedInterfaces.includes(iface)) {
+          try {
+            const connectivity = await networkManager.getConnectivityStatus(iface);
+            results[iface] = connectivity;
+          } catch (error) {
+            console.error(`Error getting connectivity for ${iface}:`, error);
+            results[iface] = {
+              local: { connected: false, details: `Error: ${error.message}` },
+              internet: { reachable: false, details: `Error: ${error.message}` }
+            };
+          }
+        }
+      }
+
+      res.json({ 
+        connectivity: results,
+        timestamp: new Date().toISOString()
+      });
+    } else {
+      // Return connectivity for all managed interfaces
+      const results = {};
+      
+      for (const iface of networkManager.managedInterfaces) {
+        try {
+          const connectivity = await networkManager.getConnectivityStatus(iface);
+          results[iface] = connectivity;
+        } catch (error) {
+          console.error(`Error getting connectivity for ${iface}:`, error);
+          results[iface] = {
+            local: { connected: false, details: `Error: ${error.message}` },
+            internet: { reachable: false, details: `Error: ${error.message}` }
+          };
+        }
+      }
+
+      res.json({ 
+        connectivity: results,
+        timestamp: new Date().toISOString()
+      });
+    }
+  } catch (error) {
+    console.error(`Error getting connectivity status: ${error}`);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Alias for connectivity endpoint
+app.get('/api/connectivity', (req, res) => {
+  req.url = '/net/connectivity';
+  app._router.handle(req, res);
+});
+
 app.get('/serial/supported', (req, res) => {
   try {
     const result = serialManager.getSupportedValues();
