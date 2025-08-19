@@ -1,0 +1,53 @@
+{
+    "batch_id": "1234567890",
+    "time_stamp": "2025-01-01 12:00:00",
+    "data":
+    [
+        {
+            "bms": {
+                "device_vendor": "GenericVendor",
+                "reference": "BMS-MODEL-001",
+                "protocol": "modbus_tcp"
+            },
+            "genset_controller": {
+                "device_vendor": "GenericVendor",
+                "reference": "GENSET_CONTROLLER-MODEL-001",
+                "protocol": "modbus_tcp"
+            },
+            "hvac": {
+                "device_vendor": "GenericVendor",
+                "reference": "HVAC-MODEL-001",
+                "protocol": "modbus_tcp"
+            },
+            "hybrid_inverter": {
+                "device_vendor": "GenericVendor",
+                "reference": "HYBRID_INVERTER-MODEL-001",
+                "protocol": "modbus_tcp"
+            },
+            "io_module": {
+                "device_vendor": "GenericVendor",
+                "reference": "IO_MODULE-MODEL-001",
+                "protocol": "modbus_tcp"
+            },
+            "pcs": {
+                "device_vendor": "GenericVendor",
+                "reference": "PCS-MODEL-001",
+                "protocol": "modbus_tcp"
+            },
+            "power_meter": {
+                "device_vendor": "GenericVendor",
+                "reference": "POWER_METER-MODEL-001",
+                "protocol": "modbus_tcp"
+            },
+            "solar_inverter": {
+                "device_vendor": "GenericVendor",
+                "reference": "SOLAR_INVERTER-MODEL-001",
+                "protocol": "modbus_tcp"
+            },
+            "test": {
+                "device_vendor": "GenericVendor",
+                "reference": "TEST-MODEL-001"
+            }
+        }
+    ]
+}

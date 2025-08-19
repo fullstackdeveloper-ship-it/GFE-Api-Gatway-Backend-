@@ -542,8 +542,8 @@ function handleSensorData(data) {
     console.log(`📨 Received message on sensor.data: ${JSON.stringify(data, null, 2)}`);
     console.log(`📊 Connected clients: ${socketManager.getConnectedClientsCount()}`);
 
-    // Broadcast to all connected WebSocket clients
-    socketManager.broadcastSensorData(data);
+    // Use the continuous streaming method for real-time updates
+    socketManager.handleContinuousSensorStream(data);
 
     // You can add more processing here (database storage, analytics, etc.)
   } catch (error) {

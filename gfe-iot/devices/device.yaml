@@ -33,16 +33,6 @@ devices_list:
     tcp_port: 502
     keep_tcp_seasion_open: true
     cocurrent_access: false
-  - device_name: dasdasddads
-    reference: PCS-MODEL-001
-    protocol: modbus_tcp
-    interface: eth1
-    device_id: 22
-    response_timeout: 0.5
-    device_ip: 192.168.2.3
-    tcp_port: 502
-    keep_tcp_seasion_open: true
-    cocurrent_access: true
   - device_name: Testing Ali
     reference: BMS-MODEL-001
     protocol: modbus_tcp

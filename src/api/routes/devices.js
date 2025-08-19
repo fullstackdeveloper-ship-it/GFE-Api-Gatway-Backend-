@@ -8,6 +8,59 @@ const router = express.Router();
 
 const DEVICE_LIST_PATH = process.env.DEVICE_LIST_PATH;
 const BLUEPRINTS_DIR = process.env.BLUEPRINTS_DIR;
+const REFERENCE_CATALOG_PATH = process.env.REFERENCE_CATALOG_PATH || null;
+
+
+// const fs = require('fs/promises');
+
+async function getReferencesFromCatalog() {
+  if (!REFERENCE_CATALOG_PATH) {
+    console.error('REFERENCE_CATALOG_PATH is not set');
+    return [];
+  }
+
+  try {
+    const raw = await fs.readFile(REFERENCE_CATALOG_PATH, 'utf8');
+    const json = JSON.parse(raw);
+
+    // Normalize "data" to an array of plain objects
+    let data = json?.data;
+
+    // If data is a string, try parsing (handles stringified JSON inside JSON)
+    if (typeof data === 'string') {
+      try { data = JSON.parse(data); } catch {/* ignore */}
+    }
+
+    // If data is a single object, wrap in array
+    if (data && !Array.isArray(data) && typeof data === 'object') {
+      data = [data];
+    }
+
+    // If still not an array, nothing to do
+    if (!Array.isArray(data)) {
+      console.warn('`data` is not an array:', typeof data);
+      return [];
+    }
+
+    // Collect all device objects from each entry (each entry should be a dict of devices)
+    const deviceObjs = data.flatMap(entry =>
+      entry && typeof entry === 'object' ? Object.values(entry) : []
+    );
+
+    // Extract unique references
+    const refs = [...new Set(
+      deviceObjs
+        .map(d => (d && typeof d === 'object' ? d.reference : undefined))
+        .filter(Boolean)
+    )];
+
+    return refs;
+  } catch (e) {
+    console.error('Error reading reference catalog:', e.message);
+    return [];
+  }
+}
+
 
 // --- GET all devices grouped by interface + blueprint references ---
 router.get('/', async (req, res) => {
@@ -33,6 +86,8 @@ router.get('/', async (req, res) => {
       console.error('Error reading blueprint files:', err.message);
     }
 
+    const refsFromJson = await getReferencesFromCatalog();
+
     // Group and enrich devices
     const grouped = {};
     for (const dev of devices) {
@@ -51,7 +106,7 @@ router.get('/', async (req, res) => {
 
     res.json({
       devices: grouped,
-      references: Object.keys(referenceMap)
+      references: refsFromJson
     });
   } catch (err) {
     console.error('Device list error:', err.message);
