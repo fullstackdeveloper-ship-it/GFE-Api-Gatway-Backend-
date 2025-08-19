@@ -3,7 +3,7 @@ devices_list:
     reference: HYBRID_INVERTER-MODEL-001
     protocol: modbus_rtu
     interface: serial_1
-    device_id: 324234
+    device_id: 233
     response_timeout: 32432
     byte_timeout: 23
   - device_name: testing 1
@@ -50,6 +50,26 @@ devices_list:
     device_id: 222
     response_timeout: 0.5
     device_ip: 192.1.4.5
+    tcp_port: 502
+    keep_tcp_seasion_open: true
+    cocurrent_access: true
+  - device_name: testing device 1
+    reference: IO_MODULE-MODEL-001
+    protocol: modbus_tcp
+    interface: wifi
+    device_id: 255
+    response_timeout: 0.5
+    device_ip: 192.1.3.44
+    tcp_port: 502
+    keep_tcp_seasion_open: true
+    cocurrent_access: true
+  - device_name: test
+    reference: TEST-MODEL-001
+    protocol: modbus_tcp
+    interface: eth1
+    device_id: 255
+    response_timeout: 0.5
+    device_ip: 192.2.34.5
     tcp_port: 502
     keep_tcp_seasion_open: true
     cocurrent_access: true

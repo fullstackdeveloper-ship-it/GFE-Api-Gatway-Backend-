@@ -124,23 +124,18 @@ class SocketManager {
   broadcastSensorData(data) {
     console.log(`📊 Broadcasting sensor data to ${this.clientCount} clients:`);
     console.log(`   Data: ${JSON.stringify(data, null, 2)}`);
-    console.log(`   Event: sensor_data`);
+    console.log(`   Event: sensor-data`);
+    const sensorData = JSON.stringify(data);
+    console.log(`   Sensor data: ${sensorData}`);
     
     if (this.io && this.clientCount > 0) {
-      this.io.emit('sensor_data', data);
+      this.io.emit('sensor-data', data);
       console.log(`✅ Sensor data broadcasted successfully to ${this.clientCount} clients`);
     } else {
       console.log(`⚠️  No clients connected or Socket.IO not initialized`);
     }
   }
 
-  broadcastNetworkUpdate(data) {
-    this.broadcastToAll('network-update', data);
-  }
-
-  broadcastSerialUpdate(data) {
-    this.broadcastToAll('serial-update', data);
-  }
 
   broadcastSystemAlert(alert) {
     this.broadcastToAll('system-alert', {
