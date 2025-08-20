@@ -3,7 +3,12 @@ const http = require('http');
 const socketIo = require('socket.io');
 const cors = require('cors');
 const path = require('path');
+const fs = require('fs').promises;
+const { exec } = require('child_process');
+const util = require('util');
 require('dotenv').config();
+
+const execAsync = util.promisify(exec);
 
 // Import services
 const socketManager = require('./services/socket/socketManager');
@@ -32,6 +37,50 @@ const io = socketIo(server, {
 // Initialize socket manager
 socketManager.init(io);
 
+// Config file path
+const CONFIG_FILE_PATH = path.join(__dirname, '../data/app-config.json');
+
+// Ensure config directory exists
+async function ensureConfigDirectory() {
+  const configDir = path.dirname(CONFIG_FILE_PATH);
+  try {
+    await fs.access(configDir);
+  } catch {
+    await fs.mkdir(configDir, { recursive: true });
+  }
+}
+
+// Default config
+const DEFAULT_CONFIG = {
+  siteName: 'Green Project',
+  language: 'en',
+  timezone: 'UTC',
+  deviceTime: null,
+  theme: 'light'
+};
+
+// Read config from file
+async function readConfig() {
+  try {
+    await ensureConfigDirectory();
+    const data = await fs.readFile(CONFIG_FILE_PATH, 'utf8');
+    return JSON.parse(data);
+  } catch (error) {
+    // If file doesn't exist, create with default config
+    if (error.code === 'ENOENT') {
+      await writeConfig(DEFAULT_CONFIG);
+      return DEFAULT_CONFIG;
+    }
+    throw error;
+  }
+}
+
+// Write config to file
+async function writeConfig(configData) {
+  await ensureConfigDirectory();
+  await fs.writeFile(CONFIG_FILE_PATH, JSON.stringify(configData, null, 2));
+}
+
 // Middleware
 app.use(cors());
 app.use(express.json());
@@ -51,6 +100,108 @@ app.get('/health', (req, res) => {
     timestamp: new Date().toISOString()
   });
 });
+
+// Enhanced ping endpoint for connectivity check (pings Google DNS)
+app.get('/api/ping', async (req, res) => {
+  try {
+    // Ping Google's DNS server (8.8.8.8) to check internet connectivity
+    const { stdout, stderr } = await execAsync('ping -c 1 -W 3 8.8.8.8');
+    
+    // Check if ping was successful
+    const isOnline = stdout.includes('1 received') || stdout.includes('1 packets received');
+    
+    res.json({
+      status: isOnline ? 'online' : 'offline',
+      connectivity: isOnline,
+      target: '8.8.8.8',
+      timestamp: new Date().toISOString(),
+      ...(isOnline && { latency: extractLatency(stdout) })
+    });
+  } catch (error) {
+    res.json({
+      status: 'offline',
+      connectivity: false,
+      target: '8.8.8.8',
+      error: 'Network unreachable',
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// Helper function to extract latency from ping output
+function extractLatency(pingOutput) {
+  const latencyMatch = pingOutput.match(/time=([0-9.]+)\s*ms/);
+  return latencyMatch ? parseFloat(latencyMatch[1]) : null;
+}
+
+
+
+// Config API endpoints
+app.get('/api/config', async (req, res) => {
+  try {
+    const configData = await readConfig();
+    res.json(configData);
+  } catch (error) {
+    console.error('Error reading config:', error);
+    res.status(500).json({ error: 'Failed to read configuration' });
+  }
+});
+
+app.put('/api/config', async (req, res) => {
+  try {
+    const currentConfig = await readConfig();
+    const updatedConfig = { ...currentConfig, ...req.body };
+    await writeConfig(updatedConfig);
+    res.json(updatedConfig);
+  } catch (error) {
+    console.error('Error updating config:', error);
+    res.status(500).json({ error: 'Failed to update configuration' });
+  }
+});
+
+// Simple device time API endpoint (just saves to config)
+app.post('/api/device-time', async (req, res) => {
+  try {
+    const { deviceTime, timezone } = req.body;
+    if (!deviceTime) {
+      return res.status(400).json({ error: 'Device time is required' });
+    }
+
+    // Update config with new device time
+    const currentConfig = await readConfig();
+    const updatedConfig = { ...currentConfig, deviceTime };
+    if (timezone) {
+      updatedConfig.timezone = timezone;
+    }
+    await writeConfig(updatedConfig);
+
+    res.json({ 
+      success: true, 
+      message: 'Device time and timezone saved to configuration',
+      deviceTime,
+      timezone: timezone || updatedConfig.timezone
+    });
+  } catch (error) {
+    console.error('Error setting device time:', error);
+    res.status(500).json({ error: 'Failed to set device time' });
+  }
+});
+
+// Simple system info endpoint
+app.get('/api/system-info', async (req, res) => {
+  try {
+    res.json({
+      success: true,
+      message: 'System info endpoint available',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Error getting system info:', error);
+    res.status(500).json({ error: 'Failed to get system information' });
+  }
+});
+
+
 
 app.get('/clients', (req, res) => {
   res.json({

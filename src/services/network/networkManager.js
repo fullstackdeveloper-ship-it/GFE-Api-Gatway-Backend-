@@ -17,7 +17,7 @@ class NetworkManager {
     this.interfacesFile = '/etc/network/interfaces';
     this.interfacesDir = '/etc/network/interfaces.d';
     this.resolvConf = '/etc/resolv.conf';
-    this.managedInterfaces = ['eth1', 'wifi'];
+    this.managedInterfaces = ['eth1', 'wlan0']
     this.defaultDns = ['8.8.8.8', '1.1.1.1'];
     
     consoleLog(`📁 Configuration paths:`);

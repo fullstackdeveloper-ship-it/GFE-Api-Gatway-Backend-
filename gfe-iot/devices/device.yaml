@@ -3,7 +3,7 @@ devices_list:
     reference: HYBRID_INVERTER-MODEL-001
     protocol: modbus_rtu
     interface: serial_1
-    device_id: 233
+    device_id: 232
     response_timeout: 32432
     byte_timeout: 23
   - device_name: testing 1
