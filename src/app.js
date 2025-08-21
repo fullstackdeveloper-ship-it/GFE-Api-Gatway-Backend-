@@ -17,6 +17,7 @@ const networkManager = require('./services/network/networkManager');
 const serialManager = require('./services/serial/serialManager');
 
 const deviceRoutes = require('./api/routes/devices');
+const connectivityRoutes = require('./api/routes/connectivity');
 // const serialRoutes = require('./api/routes/serial');
 
 // Import configuration
@@ -234,6 +235,7 @@ app.get('/test-broadcast', (req, res) => {
 });
 
 app.use('/api/devices', deviceRoutes);
+app.use('/api/connectivity', connectivityRoutes);
 // app.use('/api/serial', serialRoutes);
 
 // Network Management API Routes
@@ -400,7 +402,7 @@ app.put('/api/serial-ports/:portName', (req, res) => {
 });
 
 // Connectivity Status API Routes
-app.get('/net/connectivity', async (req, res) => {
+app.get('/api/net/connectivity', async (req, res) => {
   try {
     const onlyParam = req.query.only;
     if (onlyParam) {
