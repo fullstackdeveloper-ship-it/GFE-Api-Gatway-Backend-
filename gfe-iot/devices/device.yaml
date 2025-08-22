@@ -1,5 +1,5 @@
 devices_list:
-  - device_name: adasdasd
+  - device_name: adasdasd3423
     reference: HYBRID_INVERTER-MODEL-001
     protocol: modbus_rtu
     interface: serial_1
@@ -63,13 +63,13 @@ devices_list:
     tcp_port: 502
     keep_tcp_seasion_open: true
     cocurrent_access: true
-  - device_name: testing 343
+  - device_name: testing 343222
     reference: GENSET_CONTROLLER-MODEL-001
     protocol: modbus_tcp
     interface: eth1
     device_id: 253
     response_timeout: 0.5
-    device_ip: 192.163.5.1
+    device_ip: 192.163.5.2
     tcp_port: 502
     keep_tcp_seasion_open: true
     cocurrent_access: true
