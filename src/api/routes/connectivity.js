@@ -166,11 +166,8 @@ async function testSerialConnectivity(protocol, name, target, timeoutMs) {
     // Check if serial interface exists and is accessible
     await validateSerialInterface(devicePath);
 
-    // Build command arguments
+    // Build command arguments - Only 3 arguments: name, protocol, devicePath (no deviceId)
     const args = [deviceName, protocol, devicePath];
-    if (deviceId) {
-      args.push(deviceId);
-    }
     
     console.log(`🚀 Executing: ${CONNECTION_TESTER_PATH} ${args.join(' ')}`);
 
