@@ -45,7 +45,7 @@
                 "protocol": "modbus_tcp"
             },
             "test": {
-                "device_vendor": "GenericVendor",
+                "device_vendor": "Testinggg",
                 "reference": "TEST-MODEL-001"
             }
         }

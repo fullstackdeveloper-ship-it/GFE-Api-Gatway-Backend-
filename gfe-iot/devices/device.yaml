@@ -23,16 +23,6 @@ devices_list:
     device_id: 22
     response_timeout: 0.5
     byte_timeout: 0.5
-  - device_name: dasdasddasda
-    reference: HYBRID_INVERTER-MODEL-001
-    protocol: modbus_tcp
-    interface: eth1
-    device_id: 23
-    response_timeout: 0.5
-    device_ip: 192.168.1.2
-    tcp_port: 502
-    keep_tcp_seasion_open: true
-    cocurrent_access: false
   - device_name: testing device 1
     reference: IO_MODULE-MODEL-001
     protocol: modbus_tcp
@@ -43,16 +33,6 @@ devices_list:
     tcp_port: 502
     keep_tcp_seasion_open: true
     cocurrent_access: true
-  - device_name: test ali
-    reference: BMS-MODEL-001
-    protocol: modbus_tcp
-    interface: eth1
-    device_id: 252
-    response_timeout: 0.5
-    device_ip: 127.0.0.1
-    tcp_port: 5002
-    keep_tcp_seasion_open: true
-    cocurrent_access: true
   - device_name: testing2
     reference: GENSET_CONTROLLER-MODEL-001
     protocol: modbus_tcp
@@ -60,16 +40,6 @@ devices_list:
     device_id: 222
     response_timeout: 0.5
     device_ip: 192.1.24.4
-    tcp_port: 502
-    keep_tcp_seasion_open: true
-    cocurrent_access: true
-  - device_name: testing 343222
-    reference: GENSET_CONTROLLER-MODEL-001
-    protocol: modbus_tcp
-    interface: eth1
-    device_id: 253
-    response_timeout: 0.5
-    device_ip: 192.163.5.2
     tcp_port: 502
     keep_tcp_seasion_open: true
     cocurrent_access: true
@@ -83,3 +53,13 @@ devices_list:
     tcp_port: 502
     keep_tcp_seasion_open: true
     cocurrent_access: true
+  - device_name: dsdsad
+    reference: GENSET_CONTROLLER-MODEL-001
+    protocol: modbus_tcp
+    interface: eth1
+    device_id: 221
+    response_timeout: 0.5
+    device_ip: 192.1.3.4
+    tcp_port: 502
+    keep_tcp_seasion_open: false
+    cocurrent_access: false

@@ -11,8 +11,6 @@ const BLUEPRINTS_DIR = process.env.BLUEPRINTS_DIR;
 const REFERENCE_CATALOG_PATH = process.env.REFERENCE_CATALOG_PATH || null;
 
 
-// const fs = require('fs/promises');
-
 async function getReferencesFromCatalog() {
   if (!REFERENCE_CATALOG_PATH) {
     console.error('REFERENCE_CATALOG_PATH is not set');
@@ -23,43 +21,48 @@ async function getReferencesFromCatalog() {
     const raw = await fs.readFile(REFERENCE_CATALOG_PATH, 'utf8');
     const json = JSON.parse(raw);
 
-    // Normalize "data" to an array of plain objects
+    // Normalize json.data → always an array of plain objects
     let data = json?.data;
-
-    // If data is a string, try parsing (handles stringified JSON inside JSON)
     if (typeof data === 'string') {
-      try { data = JSON.parse(data); } catch {/* ignore */}
+      try { data = JSON.parse(data); } catch {/* ignore parse error */}
     }
-
-    // If data is a single object, wrap in array
     if (data && !Array.isArray(data) && typeof data === 'object') {
       data = [data];
     }
+    if (!Array.isArray(data)) return [];
 
-    // If still not an array, nothing to do
-    if (!Array.isArray(data)) {
-      console.warn('`data` is not an array:', typeof data);
-      return [];
+    // Collect all device objects from each entry
+    const devices = data.flatMap(entry =>
+      entry && typeof entry === 'object' ? Object.values(entry) : []
+    ).filter(d => d && typeof d === 'object');
+
+    // Group by vendor → unique references per vendor
+    const map = new Map();
+    for (const d of devices) {
+      const vendor = d.device_vendor || 'Unknown';
+      const ref = d.reference;
+      if (!ref) continue;
+      if (!map.has(vendor)) map.set(vendor, new Set());
+      map.get(vendor).add(ref);
     }
 
-    // Collect all device objects from each entry (each entry should be a dict of devices)
-    const deviceObjs = data.flatMap(entry =>
-      entry && typeof entry === 'object' ? Object.values(entry) : []
-    );
+    // Build the response: [{ vendor, references: [{reference}, ...] }]
+    const result = Array.from(map.entries()).map(([vendor, refSet]) => ({
+      vendor,
+      references: Array.from(refSet).map(reference => ({ reference }))
+    }));
 
-    // Extract unique references
-    const refs = [...new Set(
-      deviceObjs
-        .map(d => (d && typeof d === 'object' ? d.reference : undefined))
-        .filter(Boolean)
-    )];
+    // Optional: sort vendors and references for stable output
+    result.sort((a, b) => a.vendor.localeCompare(b.vendor));
+    for (const g of result) g.references.sort((a, b) => a.reference.localeCompare(b.reference));
 
-    return refs;
+    return result;
   } catch (e) {
     console.error('Error reading reference catalog:', e.message);
     return [];
   }
 }
+
 
 
 // --- GET all devices grouped by interface + blueprint references ---
