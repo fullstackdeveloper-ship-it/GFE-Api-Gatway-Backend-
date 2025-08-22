@@ -37,36 +37,52 @@ const TEST_CONFIG = {
 };
 
 /**
- * Test ping functionality directly
+ * Test HTTP connectivity functionality directly
  */
-async function testPingDirectly() {
-  console.log('🧪 Testing ping functionality directly...\n');
+async function testHttpConnectivityDirectly() {
+  console.log('🧪 Testing HTTP connectivity functionality directly...\n');
   
   try {
-    // Test localhost ping
-    console.log('📍 Testing localhost ping...');
-    const localPing = await execAsync('ping -c 3 -W 2 127.0.0.1', { timeout: 10000 });
-    console.log('✅ Localhost ping successful');
-    console.log('   Output:', localPing.stdout.split('\n').slice(-3).join('\n   '));
-    
-    // Test Google DNS ping
-    console.log('\n📍 Testing Google DNS ping...');
-    const googlePing = await execAsync('ping -c 3 -W 2 8.8.8.8', { timeout: 10000 });
-    console.log('✅ Google DNS ping successful');
-    console.log('   Output:', googlePing.stdout.split('\n').slice(-3).join('\n   '));
-    
-    // Test unreachable IP
-    console.log('\n📍 Testing unreachable IP ping...');
+    // Test localhost HTTP connectivity
+    console.log('📍 Testing localhost HTTP connectivity...');
     try {
-      await execAsync('ping -c 3 -W 2 192.168.254.254', { timeout: 10000 });
-      console.log('⚠️ Unexpected: Unreachable IP responded');
+      const localHttp = await execAsync('curl -sS -o /dev/null -w "%{http_code}\n" http://localhost:5001/health', { timeout: 10000 });
+      const httpCode = parseInt(localHttp.stdout.trim());
+      if (httpCode >= 200 && httpCode < 400) {
+        console.log('✅ Localhost HTTP connectivity successful (HTTP ' + httpCode + ')');
+      } else {
+        console.log('⚠️ Localhost HTTP connectivity failed (HTTP ' + httpCode + ')');
+      }
     } catch (error) {
-      console.log('✅ Unreachable IP ping failed as expected');
+      console.log('⚠️ Localhost HTTP connectivity failed:', error.message);
+    }
+    
+    // Test Google connectivity check
+    console.log('\n📍 Testing Google connectivity check...');
+    try {
+      const googleHttp = await execAsync('curl -sS -o /dev/null -w "%{http_code}\n" https://connectivitycheck.gstatic.com/generate_204', { timeout: 10000 });
+      const httpCode = parseInt(googleHttp.stdout.trim());
+      if (httpCode === 204) {
+        console.log('✅ Google connectivity check successful (HTTP 204)');
+      } else {
+        console.log('⚠️ Google connectivity check failed (HTTP ' + httpCode + ')');
+      }
+    } catch (error) {
+      console.log('❌ Google connectivity check failed:', error.message);
+    }
+    
+    // Test unreachable domain
+    console.log('\n📍 Testing unreachable domain...');
+    try {
+      await execAsync('curl -sS -o /dev/null -w "%{http_code}\n" https://unreachable-domain-12345.com', { timeout: 10000 });
+      console.log('⚠️ Unexpected: Unreachable domain responded');
+    } catch (error) {
+      console.log('✅ Unreachable domain failed as expected');
       console.log('   Error:', error.message);
     }
     
   } catch (error) {
-    console.error('❌ Ping test failed:', error.message);
+    console.error('❌ HTTP connectivity test failed:', error.message);
   }
 }
 
@@ -195,7 +211,7 @@ async function runTests() {
   
   try {
     // Test 1: Direct ping functionality
-    await testPingDirectly();
+    await testHttpConnectivityDirectly();
     
     // Test 2: Port connectivity
     await testPortConnectivity();
@@ -217,7 +233,7 @@ if (require.main === module) {
 }
 
 module.exports = {
-  testPingDirectly,
+  testHttpConnectivityDirectly,
   testPortConnectivity,
   testAPIEndpoint,
   parsePingOutput

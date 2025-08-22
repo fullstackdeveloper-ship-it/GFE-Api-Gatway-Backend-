@@ -250,25 +250,23 @@ class NetworkManager {
         return { reachable: false, details: 'DNS resolution failed' };
       }
       
-      // Test connectivity to public IP (8.8.8.8)
+      // Test HTTP connectivity instead of ping (since ICMP might be blocked)
       try {
-        consoleLog(`   🔍 Testing public IP connectivity: 8.8.8.8`);
-        await execAsync(`ping -c 1 -W 3 -I ${interfaceName} 8.8.8.8`, { timeout: 8000 });
-        consoleLog(`   ✅ Public IP 8.8.8.8 is reachable`);
+        consoleLog(`   🔍 Testing HTTP connectivity: https://connectivitycheck.gstatic.com/generate_204`);
+        const { stdout } = await execAsync(`curl -sS -o /dev/null -w "%{http_code}\n" https://connectivitycheck.gstatic.com/generate_204`, { timeout: 8000 });
+        const httpCode = parseInt(stdout.trim());
+        const isOnline = httpCode === 204;
+        
+        if (isOnline) {
+          consoleLog(`   ✅ HTTP connectivity successful (HTTP ${httpCode})`);
+          return { reachable: true, details: 'Internet accessible via HTTP' };
+        } else {
+          consoleLog(`   ❌ HTTP connectivity failed (HTTP ${httpCode})`);
+          return { reachable: false, details: `HTTP connectivity failed (HTTP ${httpCode})` };
+        }
       } catch (error) {
-        consoleLog(`   ❌ Public IP 8.8.8.8 not reachable: ${error.message}`);
-        return { reachable: false, details: 'Public IP unreachable' };
-      }
-      
-      // Test connectivity to a domain (google.com)
-      try {
-        consoleLog(`   🔍 Testing domain connectivity: google.com`);
-        await execAsync(`ping -c 1 -W 3 -I ${interfaceName} google.com`, { timeout: 8000 });
-        consoleLog(`   ✅ Domain google.com is reachable`);
-        return { reachable: true, details: 'Internet accessible' };
-      } catch (error) {
-        consoleLog(`   ⚠️ Domain google.com not reachable: ${error.message}`);
-        return { reachable: true, details: 'Internet accessible (IP only)' };
+        consoleLog(`   ❌ HTTP connectivity failed: ${error.message}`);
+        return { reachable: false, details: 'HTTP connectivity failed' };
       }
       
     } catch (error) {

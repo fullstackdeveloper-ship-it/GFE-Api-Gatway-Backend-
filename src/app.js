@@ -102,40 +102,34 @@ app.get('/health', (req, res) => {
   });
 });
 
-// Enhanced ping endpoint for connectivity check (pings Google DNS)
+// Enhanced ping endpoint for connectivity check (uses HTTP instead of ICMP)
 app.get('/api/ping', async (req, res) => {
   try {
-    // Ping Google's DNS server (8.8.8.8) to check internet connectivity
-    const { stdout, stderr } = await execAsync('ping -c 1 -W 3 8.8.8.8');
+    // Use curl to check HTTP connectivity instead of ICMP ping
+    const { stdout, stderr } = await execAsync('curl -sS -o /dev/null -w "%{http_code}\n" https://connectivitycheck.gstatic.com/generate_204');
     
-    // Check if ping was successful
-    const isOnline = stdout.includes('1 received') || stdout.includes('1 packets received');
+    // Check if HTTP response code is 204 (success)
+    const httpCode = parseInt(stdout.trim());
+    const isOnline = httpCode === 204;
     
     res.json({
       status: isOnline ? 'online' : 'offline',
       connectivity: isOnline,
-      target: '8.8.8.8',
+      target: 'https://connectivitycheck.gstatic.com/generate_204',
+      httpCode: httpCode,
       timestamp: new Date().toISOString(),
-      ...(isOnline && { latency: extractLatency(stdout) })
+      ...(isOnline && { latency: null }) // HTTP doesn't provide latency like ping
     });
   } catch (error) {
     res.json({
       status: 'offline',
       connectivity: false,
-      target: '8.8.8.8',
+      target: 'https://connectivitycheck.gstatic.com/generate_204',
       error: 'Network unreachable',
       timestamp: new Date().toISOString()
     });
   }
 });
-
-// Helper function to extract latency from ping output
-function extractLatency(pingOutput) {
-  const latencyMatch = pingOutput.match(/time=([0-9.]+)\s*ms/);
-  return latencyMatch ? parseFloat(latencyMatch[1]) : null;
-}
-
-
 
 // Config API endpoints
 app.get('/api/config', async (req, res) => {
