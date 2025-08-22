@@ -101,7 +101,7 @@ async function testTCPConnectivity(protocol, name, target, timeoutMs) {
     }
 
     // Determine success based on the parsed result
-    const isSuccess = testResult.status === 'success' || testResult.status === 'passed';
+    const isSuccess = testResult.status === 'success' || testResult.status === 'passed' || testResult.status === 'connected';
 
     return {
       success: isSuccess,
@@ -227,7 +227,7 @@ async function testSerialConnectivity(protocol, name, target, timeoutMs) {
     }
 
     // Determine success based on the parsed result
-    const isSuccess = testResult.status === 'success' || testResult.status === 'passed';
+    const isSuccess = testResult.status === 'success' || testResult.status === 'passed' || testResult.status === 'connected';
 
     return {
       success: isSuccess,
