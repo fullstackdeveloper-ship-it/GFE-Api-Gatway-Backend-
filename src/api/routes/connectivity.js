@@ -76,10 +76,9 @@ async function testTCPConnectivity(protocol, name, target, timeoutMs) {
 
     const port = target.port || 502;
     const deviceName = name || `TCP_${target.ip}_${port}`;
-    const targetString = `${target.ip}:${port}`;
 
-    // Build command arguments
-    const args = [deviceName, protocol, targetString];
+    // Build command arguments - Only 3 arguments: name, protocol, IP (no port)
+    const args = [deviceName, protocol, target.ip];
     
     console.log(`🚀 Executing: ${CONNECTION_TESTER_PATH} ${args.join(' ')}`);
 
@@ -95,7 +94,7 @@ async function testTCPConnectivity(protocol, name, target, timeoutMs) {
       success: true,
       type: 'tcp',
       protocol: protocol,
-      target: targetString,
+      target: `${target.ip}:${port}`,
       stdout: stdout.trim(),
       stderr: stderr.trim(),
       durationMs: durationMs,
