@@ -76,6 +76,7 @@ async function testTCPConnectivity(protocol, name, target, timeoutMs) {
 
     const port = target.port || 502;
     const deviceName = name || `TCP_${target.ip}_${port}`;
+    const targetString = `${target.ip}:${port}`;
 
     // Build command arguments - Only 3 arguments: name, protocol, IP (no port)
     const args = [deviceName, protocol, target.ip];
@@ -90,19 +91,47 @@ async function testTCPConnectivity(protocol, name, target, timeoutMs) {
     });
     const durationMs = Date.now() - startTime;
 
+    // Parse the JSON response from stdout
+    let testResult;
+    try {
+      testResult = JSON.parse(stdout.trim());
+    } catch (parseError) {
+      console.error('Failed to parse connection_tester output:', parseError);
+      testResult = { status: 'failed', error: 'Invalid response format' };
+    }
+
+    // Determine success based on the parsed result
+    const isSuccess = testResult.status === 'success' || testResult.status === 'passed';
+
     return {
-      success: true,
+      success: isSuccess,
       type: 'tcp',
       protocol: protocol,
-      target: `${target.ip}:${port}`,
+      target: targetString,
       stdout: stdout.trim(),
       stderr: stderr.trim(),
       durationMs: durationMs,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
+      // Include the parsed result details
+      deviceName: testResult.device_name,
+      responseTime: testResult.response_time_ms,
+      status: testResult.status,
+      error: testResult.error,
+      value: testResult.value
     };
 
   } catch (error) {
     console.error(`❌ TCP connectivity test failed:`, error);
+    
+    // Try to parse stdout for error details even when command fails
+    let testResult = { status: 'failed', error: 'Unknown error' };
+    if (error.stdout) {
+      try {
+        testResult = JSON.parse(error.stdout.trim());
+      } catch (parseError) {
+        console.error('Failed to parse error output:', parseError);
+      }
+    }
     
     // Handle specific error types
     let userMessage = 'TCP connectivity test failed';
@@ -123,6 +152,10 @@ async function testTCPConnectivity(protocol, name, target, timeoutMs) {
     } else if (error.code === 'ECONNREFUSED') {
       userMessage = 'Connection refused by target';
       errorCode = 'CONNECTION_REFUSED';
+    } else if (error.code === 1 && testResult.error) {
+      // Use the actual error message from the binary
+      userMessage = testResult.error;
+      errorCode = 'DEVICE_ERROR';
     }
     
     return {
@@ -131,9 +164,14 @@ async function testTCPConnectivity(protocol, name, target, timeoutMs) {
       protocol: protocol,
       target: `${target.ip}:${target.port || 502}`,
       error: userMessage,
-      details: error.message,
+      details: testResult.error || error.message,
       errorCode: errorCode,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
+      // Include the parsed result details
+      deviceName: testResult.device_name,
+      responseTime: testResult.response_time_ms,
+      status: testResult.status,
+      value: testResult.value
     };
   }
 }
@@ -179,8 +217,20 @@ async function testSerialConnectivity(protocol, name, target, timeoutMs) {
     });
     const durationMs = Date.now() - startTime;
 
+    // Parse the JSON response from stdout
+    let testResult;
+    try {
+      testResult = JSON.parse(stdout.trim());
+    } catch (parseError) {
+      console.error('Failed to parse connection_tester output:', parseError);
+      testResult = { status: 'failed', error: 'Invalid response format' };
+    }
+
+    // Determine success based on the parsed result
+    const isSuccess = testResult.status === 'success' || testResult.status === 'passed';
+
     return {
-      success: true,
+      success: isSuccess,
       type: 'serial',
       protocol: protocol,
       target: devicePath,
@@ -189,11 +239,27 @@ async function testSerialConnectivity(protocol, name, target, timeoutMs) {
       stdout: stdout.trim(),
       stderr: stderr.trim(),
       durationMs: durationMs,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
+      // Include the parsed result details
+      deviceName: testResult.device_name,
+      responseTime: testResult.response_time_ms,
+      status: testResult.status,
+      error: testResult.error,
+      value: testResult.value
     };
 
   } catch (error) {
     console.error(`❌ Serial connectivity test failed:`, error);
+    
+    // Try to parse stdout for error details even when command fails
+    let testResult = { status: 'failed', error: 'Unknown error' };
+    if (error.stdout) {
+      try {
+        testResult = JSON.parse(error.stdout.trim());
+      } catch (parseError) {
+        console.error('Failed to parse error output:', parseError);
+      }
+    }
     
     // Handle specific error types
     let userMessage = 'Serial connectivity test failed';
@@ -211,6 +277,10 @@ async function testSerialConnectivity(protocol, name, target, timeoutMs) {
     } else if (error.code === 'SERIAL_INTERFACE_NOT_FOUND') {
       userMessage = 'Serial interface not found or not accessible';
       errorCode = 'INTERFACE_NOT_FOUND';
+    } else if (error.code === 1 && testResult.error) {
+      // Use the actual error message from the binary
+      userMessage = testResult.error;
+      errorCode = 'DEVICE_ERROR';
     }
     
     return {
@@ -220,9 +290,14 @@ async function testSerialConnectivity(protocol, name, target, timeoutMs) {
       target: target.interface || 'unknown',
       interface: target.interface,
       error: userMessage,
-      details: error.message,
+      details: testResult.error || error.message,
       errorCode: errorCode,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
+      // Include the parsed result details
+      deviceName: testResult.device_name,
+      responseTime: testResult.response_time_ms,
+      status: testResult.status,
+      value: testResult.value
     };
   }
 }
