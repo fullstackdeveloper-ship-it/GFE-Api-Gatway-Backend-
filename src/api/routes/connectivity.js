@@ -145,12 +145,21 @@ async function testSerialConnectivity(protocol, name, target, timeoutMs) {
   try {
     console.log(`🔍 Testing Serial connectivity: ${protocol} on ${target.interface}`);
 
-    // Validate serial target
-    if (!target.interface || !SERIAL_INTERFACE_MAP[target.interface]) {
-      throw new Error('Invalid interface. Must be "serial_1" or "serial_2"');
+    // Validate serial target - accept both frontend names and actual device paths
+    const validInterfaces = ['serial_1', 'serial_2', '/dev/ttyS4', '/dev/ttyS5'];
+    if (!target.interface || !validInterfaces.includes(target.interface)) {
+      throw new Error('Invalid interface. Must be "serial_1", "serial_2", "/dev/ttyS4", or "/dev/ttyS5"');
     }
 
-    const devicePath = SERIAL_INTERFACE_MAP[target.interface];
+    // Map interface names to actual device paths
+    const devicePathMapping = {
+      'serial_1': '/dev/ttyS4',
+      'serial_2': '/dev/ttyS5',
+      '/dev/ttyS4': '/dev/ttyS4',
+      '/dev/ttyS5': '/dev/ttyS5'
+    };
+    
+    const devicePath = devicePathMapping[target.interface];
     const deviceName = name || `Serial_${target.interface}`;
     const deviceId = target.deviceId || '';
 
@@ -211,7 +220,7 @@ async function testSerialConnectivity(protocol, name, target, timeoutMs) {
       success: false,
       type: 'serial',
       protocol: protocol,
-      target: SERIAL_INTERFACE_MAP[target.interface] || 'unknown',
+      target: target.interface || 'unknown',
       interface: target.interface,
       error: userMessage,
       details: error.message,
