@@ -176,6 +176,11 @@ router.put('/:deviceName', async (req, res) => {
     } else if (updatedDevice.protocol === 'modbus_tcp') {
       delete updatedDevice.byte_timeout;
     }
+    
+    // Clean role field if not a power meter device
+    if (!updatedDevice.reference || !updatedDevice.reference.toLowerCase().startsWith('power_meter-model')) {
+      delete updatedDevice.role;
+    }
 
     // 🔐 Validate
     const { error } = validateDeviceSchema(updatedDevice, data.devices_list);

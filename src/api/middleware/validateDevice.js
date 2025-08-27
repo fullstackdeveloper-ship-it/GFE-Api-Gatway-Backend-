@@ -7,7 +7,8 @@ const commonFields = {
   protocol: Joi.string().valid('modbus_tcp', 'modbus_rtu').required().label('protocol'),
   interface: Joi.string().required().label('interface'),
   device_id: Joi.number().required().label('device_id'),
-  response_timeout: Joi.number().required().label('response_timeout')
+  response_timeout: Joi.number().required().label('response_timeout'),
+  role: Joi.string().valid('grid_power_meter', 'generator_power_meter', 'other_power_meter').optional().label('role')
 };
 
 // TCP-specific schema
@@ -40,6 +41,15 @@ const validateDeviceSchema = (device, existingDevices = []) => {
 
   const { error } = baseValidation.validate(device);
   if (error) return { error };
+
+  // Check if role is required for power meter devices
+  if (device.reference && device.reference.toLowerCase().startsWith('power_meter-model')) {
+    if (!device.role) {
+      return {
+        error: new Error('Role is required for Power Meter devices. Please select Grid Power Meter, Generator Power Meter, or Other Power Meter.')
+      };
+    }
+  }
 
   // Check for duplicate device_id (should be unique across all devices)
   const duplicateDeviceId = existingDevices.find(d => 
