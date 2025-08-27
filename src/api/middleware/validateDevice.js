@@ -15,8 +15,8 @@ const tcpSchema = Joi.object({
   ...commonFields,
   device_ip: Joi.string().ip().required().label('device_ip'),
   tcp_port: Joi.number().port().required().label('tcp_port'),
-  keep_tcp_seasion_open: Joi.boolean().required().label('keep_tcp_seasion_open'),
-  cocurrent_access: Joi.boolean().required().label('cocurrent_access'),
+  keep_tcp_session_open: Joi.boolean().required().label('keep_tcp_session_open'),
+  concurrent_access: Joi.boolean().required().label('concurrent_access'),
   byte_timeout: Joi.forbidden().label('byte_timeout') // explicitly disallowed
 });
 
@@ -26,8 +26,8 @@ const rtuSchema = Joi.object({
   byte_timeout: Joi.number().required().label('byte_timeout'),
   device_ip: Joi.forbidden().label('device_ip'),
   tcp_port: Joi.forbidden().label('tcp_port'),
-  keep_tcp_seasion_open: Joi.forbidden().label('keep_tcp_seasion_open'),
-  cocurrent_access: Joi.forbidden().label('cocurrent_access')
+  keep_tcp_session_open: Joi.forbidden().label('keep_tcp_session_open'),
+  concurrent_access: Joi.forbidden().label('concurrent_access')
 });
 
 // Schema validator
@@ -41,16 +41,27 @@ const validateDeviceSchema = (device, existingDevices = []) => {
   const { error } = baseValidation.validate(device);
   if (error) return { error };
 
-  // Additional check: no duplicate IP for TCP
+  // Check for duplicate device_id (should be unique across all devices)
+  const duplicateDeviceId = existingDevices.find(d => 
+    d.device_id === device.device_id && 
+    d.device_name !== device.device_name
+  );
+  if (duplicateDeviceId) {
+    return {
+      error: new Error(`Device ID "${device.device_id}" already exists for device "${duplicateDeviceId.device_name}". Device ID must be unique.`)
+    };
+  }
+
+  // Additional check: no duplicate IP for TCP devices
   if (device.protocol === 'modbus_tcp') {
-    const duplicate = existingDevices.find(d =>
+    const duplicateIP = existingDevices.find(d =>
       d.device_ip === device.device_ip &&
       d.protocol === 'modbus_tcp' &&
       d.device_name !== device.device_name
     );
-    if (duplicate) {
+    if (duplicateIP) {
       return {
-        error: new Error(`IP address "${device.device_ip}" already exists for another TCP device.`)
+        error: new Error(`IP address "${device.device_ip}" already exists for device "${duplicateIP.device_name}". Each TCP device must have a unique IP address.`)
       };
     }
   }

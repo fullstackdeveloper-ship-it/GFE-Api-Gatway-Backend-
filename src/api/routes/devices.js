@@ -171,8 +171,8 @@ router.put('/:deviceName', async (req, res) => {
     if (updatedDevice.protocol === 'modbus_rtu') {
       delete updatedDevice.device_ip;
       delete updatedDevice.tcp_port;
-      delete updatedDevice.keep_tcp_seasion_open;
-      delete updatedDevice.cocurrent_access;
+      delete updatedDevice.keep_tcp_session_open;
+      delete updatedDevice.concurrent_access;
     } else if (updatedDevice.protocol === 'modbus_tcp') {
       delete updatedDevice.byte_timeout;
     }
