@@ -19,6 +19,8 @@ const serialManager = require('./services/serial/serialManager');
 const deviceRoutes = require('./api/routes/devices');
 const connectivityRoutes = require('./api/routes/connectivity');
 const parametersRoutes = require('./api/routes/parameters');
+const authRoutes = require('./api/routes/auth');
+const { authenticateToken } = require('./middleware/authMiddleware');
 // const serialRoutes = require('./api/routes/serial');
 
 // Import configuration
@@ -229,10 +231,11 @@ app.get('/test-broadcast', (req, res) => {
   });
 });
 
-app.use('/api/devices', deviceRoutes);
-app.use('/api/connectivity', connectivityRoutes);
-app.use('/api/parameters', parametersRoutes);
-console.log(`📡 [${new Date().toISOString()}] API Routes registered: /api/devices, /api/connectivity, /api/parameters`);
+app.use('/api/auth', authRoutes);
+app.use('/api/devices', authenticateToken, deviceRoutes);
+app.use('/api/connectivity', authenticateToken, connectivityRoutes);
+app.use('/api/parameters', authenticateToken, parametersRoutes);
+console.log(`📡 [${new Date().toISOString()}] API Routes registered: /api/auth, /api/devices, /api/connectivity, /api/parameters`);
 // app.use('/api/serial', serialRoutes);
 
 // Network Management API Routes

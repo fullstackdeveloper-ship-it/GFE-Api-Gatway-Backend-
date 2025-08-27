@@ -7,6 +7,11 @@ const config = {
   PORT: parseInt(process.env.EXPRESS_PORT) || 5001,
   DEBUG: process.env.EXPRESS_DEBUG === 'true',
   
+  // Authentication Configuration
+  DEFAULT_PASSWORD: process.env.DEFAULT_PASSWORD || 'okok@1122',
+  JWT_SECRET: process.env.JWT_SECRET || 'your-jwt-secret-key-here',
+  JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN || '24h',
+  
   // NATS Configuration
   NATS_URL: process.env.NATS_URL || 'nats://edge:CHANGE_ME_STRONG@192.168.100.135:4222',
   NATS_TOPIC: process.env.NATS_TOPIC || 'sensor.data',
