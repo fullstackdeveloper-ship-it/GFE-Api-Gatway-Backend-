@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const natsService = require('../../services/natsService');
+const natsService = require('../../services/nats/natsClient');
 
 /**
  * Set parameter value for a device

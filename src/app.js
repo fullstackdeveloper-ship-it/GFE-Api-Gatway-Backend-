@@ -232,6 +232,7 @@ app.get('/test-broadcast', (req, res) => {
 app.use('/api/devices', deviceRoutes);
 app.use('/api/connectivity', connectivityRoutes);
 app.use('/api/parameters', parametersRoutes);
+console.log(`📡 [${new Date().toISOString()}] API Routes registered: /api/devices, /api/connectivity, /api/parameters`);
 // app.use('/api/serial', serialRoutes);
 
 // Network Management API Routes
@@ -709,6 +710,7 @@ async function startServer() {
     console.log(`Port: ${config.PORT}`);
     console.log(`NATS URL: ${config.NATS_URL}`);
     console.log(`NATS Topic: ${config.NATS_TOPIC}`);
+    console.log(`NATS Control Response Topic: ${process.env.NATS_CONTROL_RESPONSE_TOPIC || 'control.response'}`);
 
     // Initialize NATS connection
     await initNatsConnection();
