@@ -232,7 +232,7 @@ app.get('/test-broadcast', (req, res) => {
 });
 
 app.use('/api/auth', authRoutes);
-app.use('/api/devices', authenticateToken, deviceRoutes);
+app.use('/api/devices', deviceRoutes);
 app.use('/api/connectivity', authenticateToken, connectivityRoutes);
 app.use('/api/parameters', authenticateToken, parametersRoutes);
 console.log(`📡 [${new Date().toISOString()}] API Routes registered: /api/auth, /api/devices, /api/connectivity, /api/parameters`);
