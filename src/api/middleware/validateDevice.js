@@ -52,19 +52,8 @@ const validateDeviceSchema = (device, existingDevices = []) => {
     };
   }
 
-  // Additional check: no duplicate IP for TCP devices
-  if (device.protocol === 'modbus_tcp') {
-    const duplicateIP = existingDevices.find(d =>
-      d.device_ip === device.device_ip &&
-      d.protocol === 'modbus_tcp' &&
-      d.device_name !== device.device_name
-    );
-    if (duplicateIP) {
-      return {
-        error: new Error(`IP address "${device.device_ip}" already exists for device "${duplicateIP.device_name}". Each TCP device must have a unique IP address.`)
-      };
-    }
-  }
+  // Note: Multiple devices can have the same IP address
+  // IP uniqueness check removed to allow multiple devices per IP
 
   return { value: device };
 };
