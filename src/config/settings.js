@@ -8,7 +8,7 @@ const config = {
   DEBUG: process.env.EXPRESS_DEBUG === 'true',
   
   // Authentication Configuration
-  DEFAULT_PASSWORD: process.env.DEFAULT_PASSWORD || 'okok@1122',
+  DEFAULT_PASSWORD: process.env.DEFAULT_PASSWORD || '12345678',
   JWT_SECRET: process.env.JWT_SECRET || 'your-jwt-secret-key-here',
   JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN || '24h',
   

@@ -61,17 +61,17 @@ router.post('/change-password', authenticateToken, async (req, res) => {
   console.log(`🚀 [${new Date().toISOString()}] POST /api/auth/change-password - Request received`);
   
   try {
-    const { currentPassword, newPassword } = req.body;
+    const { newPassword } = req.body;
 
-    if (!currentPassword || !newPassword) {
-      console.log(`❌ [${new Date().toISOString()}] Password change failed - Missing passwords`);
+    if (!newPassword) {
+      console.log(`❌ [${new Date().toISOString()}] Password change failed - Missing new password`);
       return res.status(400).json({
         success: false,
-        error: 'Current password and new password are required'
+        error: 'New password is required'
       });
     }
 
-    const result = await authService.changePassword(currentPassword, newPassword);
+    const result = await authService.changePassword(newPassword);
     
     if (result.success) {
       console.log(`✅ [${new Date().toISOString()}] Password changed successfully`);

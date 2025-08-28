@@ -113,17 +113,9 @@ class AuthService {
   /**
    * Change password
    */
-  async changePassword(currentPassword, newPassword) {
+  async changePassword(newPassword) {
     console.log(`🔐 [${new Date().toISOString()}] Password change attempt`);
     
-    if (!this.validatePassword(currentPassword)) {
-      console.log(`❌ [${new Date().toISOString()}] Password change failed - Invalid current password`);
-      return {
-        success: false,
-        message: 'Current password is incorrect'
-      };
-    }
-
     if (newPassword.length < 6) {
       console.log(`❌ [${new Date().toISOString()}] Password change failed - Password too short`);
       return {
