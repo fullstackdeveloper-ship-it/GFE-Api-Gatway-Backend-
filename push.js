@@ -1,39 +1,59 @@
-// pushData.js
 require('dotenv').config();
 const natsClient = require('./src/services/nats/natsClient');
 
 const rand = (min, max, dp = 0) =>
   Number((Math.random() * (max - min) + min).toFixed(dp));
 
-const makeRegisters = () => ({
-  AphA: String(rand(0, 40, 1)),
-  AphB: String(rand(0, 40, 1)),
-  AphC: String(rand(0, 40, 1)),
-  Hz: String(rand(49.8, 50.2, 2)),
-  PF: String(rand(0.85, 1, 2)),
-  PFPhA: String(rand(0.85, 1, 2)),
-  PFPhB: String(rand(0.85, 1, 2)),
-  PFPhC: String(rand(0.85, 1, 2)),
-  PPVphAB: String(rand(200, 500)),
-  PPVphBC: String(rand(200, 500)),
-  PPVphCA: String(rand(200, 500)),
-  PhVphA: String(rand(220, 242)),
-  PhVphB: String(rand(220, 242)),
-  PhVphC: String(rand(220, 242)),
-  VA: String(rand(0, 5000)),
-  VAR: String(rand(0, 2000)),
-  VARphA: String(rand(0, 1000)),
-  VARphB: String(rand(0, 1000)),
-  VARphC: String(rand(0, 1000)),
-  VAphA: String(rand(0, 2000)),
-  VAphB: String(rand(0, 2000)),
-  VAphC: String(rand(0, 2000)),
-  W: String(rand(0, 3000)),
-  WH: String(rand(0, 100000)),
-  WphA: String(rand(0, 1000)),
-  WphB: String(rand(0, 1000)),
-  WphC: String(rand(0, 1000)),
-});
+const shouldSendZero = () => Math.random() < 0.05; // ~5% zero value chance
+
+// === REGISTER MAKERS (with optional zero case) ===
+const makeSolarRegisters = () => {
+  return shouldSendZero() ? { W: "0" } : { W: String(rand(500, 4500)) };
+};
+
+const makeGridRegisters = () => {
+  if (shouldSendZero()) return { W: "0" };
+
+  return Math.random() < 0.5
+    ? { W: String(rand(1000, 6000)) }
+    : {
+        WphA: String(rand(300, 2000)),
+        WphB: String(rand(300, 2000)),
+        WphC: String(rand(300, 2000))
+      };
+};
+
+const makeGensetRegisters = () => {
+  if (shouldSendZero()) return { W: "0" };
+
+  return Math.random() < 0.5
+    ? { W: String(rand(1000, 3500)) }
+    : {
+        WphA: String(rand(300, 1200)),
+        WphB: String(rand(300, 1200)),
+        WphC: String(rand(300, 1200))
+      };
+};
+
+
+const deviceTypes = [
+  {
+    device_type: "solar_inverter",
+    reference: "SOLAR-INVERTER-001",
+    registerFn: makeSolarRegisters
+  },
+  {
+    device_type: "power_meter",
+    reference: "POWER-METER-001",
+    registerFn: makeGridRegisters
+  },
+  {
+    device_type: "genset_controller",
+    reference: "GENSET-CONTROLLER-001",
+    registerFn: makeGensetRegisters
+  }
+];
+
 
 (async () => {
   const connected = await natsClient.connect();
@@ -45,19 +65,24 @@ const makeRegisters = () => ({
   console.log("✅ Connected to NATS");
 
   setInterval(async () => {
+    const deviceBatch = deviceTypes.map((typeDef) => {
+      const deviceName =
+        typeDef.device_type + "_" + (1000 + Math.floor(Math.random() * 9000));
+
+      return {
+        deviceMataData: {
+          device_name: deviceName,
+          device_type: typeDef.device_type,
+          interface: "eth1",
+          protocol: "modbus_tcp",
+          reference: typeDef.reference
+        },
+        register: typeDef.registerFn()
+      };
+    });
+
     const payload = {
-      data: [
-        {
-          deviceMataData: {
-            device_name: "test",
-            device_type: "test",
-            interface: "eth1",
-            protocol: "modbus_tcp",
-            reference: "TEST-MODEL-001"
-          },
-          register: makeRegisters(),
-        }
-      ],
+      data: deviceBatch,
       metadata: {
         batch_id: Date.now().toString(),
         timestamp: Date.now()
@@ -68,11 +93,11 @@ const makeRegisters = () => ({
     if (!result) {
       console.error("⚠️ Failed to publish data.");
     } else {
-      console.log("→ Published random payload");
+      const deviceList = deviceBatch.map(d => d.deviceMataData.device_type).join(' + ');
+      console.log(`→ Published batch: ${deviceList}`);
     }
-  }, 1000);
+  }, 3000);
 
-  // Handle exit
   process.on("SIGINT", async () => {
     console.log("\n🛑 Stopping publisher...");
     await natsClient.disconnect();

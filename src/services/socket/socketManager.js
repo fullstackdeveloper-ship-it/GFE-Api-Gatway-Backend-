@@ -3,9 +3,13 @@ class SocketManager {
     this.io = null;
     this.connectedClients = new Map();
     this.clientCount = 0;
-
-    // NEW: track room listener counts for sensor devices
-    this.sensorRefCounts = new Map(); // deviceName -> count
+    this.sensorRefCounts = new Map();
+    this.previousPowerFlowData = {
+      solar: 0,
+      grid: 0,
+      genset: 0,
+      load: 0
+    };
   }
 
   init(io) {
@@ -44,9 +48,7 @@ class SocketManager {
 
         if (room.startsWith('sensor:')) {
           const deviceName = room.split(':')[1];
-          const count = this._incDeviceRef(deviceName);
-          console.log(`➕ sensor:${deviceName} refCount = ${count}`);
-          // TODO (optional): ensure upstream for deviceName starts here
+          this._incDeviceRef(deviceName);
         }
       });
       
@@ -56,9 +58,7 @@ class SocketManager {
 
         if (room.startsWith('sensor:')) {
           const deviceName = room.split(':')[1];
-          const count = this._decDeviceRef(deviceName);
-          console.log(`➖ sensor:${deviceName} refCount = ${count}`);
-          // TODO (optional): if count === 0, stop upstream for deviceName
+          this._decDeviceRef(deviceName);
         }
       });
       
@@ -77,7 +77,6 @@ class SocketManager {
     console.log('✅ Socket.IO manager initialized');
   }
 
-  // NEW: helpers
   sensorRoom(deviceName) {
     return `sensor:${deviceName}`;
   }
@@ -135,31 +134,16 @@ class SocketManager {
     }
   }
 
-  // NEW: emit only if there are listeners for that device's room
   emitSensorToDevice(deviceName, shortNameDict) {
     const room = this.sensorRoom(deviceName);
     if (!this.hasListeners(room)) {
-      // No subscribers; skip noisy emits
-      // console.log(`🕳️ No listeners for ${room}, skipping emit`);
       return false;
     }
     this.io.to(room).emit('sensor-data', shortNameDict);
-    // console.log(`📡 Emitted sensor-data to ${room}`);
     return true;
   }
 
-  /**
-   * NEW: Accepts upstream payloads of shape:
-   * {
-   *   data: [
-   *     {
-   *       deviceMataData: { device_name: "test", ... }, // note: sometimes deviceMetaData
-   *       register: { Hz: "50", W: "0", ... }           // SHORT NAME DICT
-   *     }
-   *   ],
-   *   metadata: { ... }
-   * }
-   */
+
   handleUpstreamSensorBatch(payload) {
     try {
       const arr = Array.isArray(payload?.data) ? payload.data : [];
@@ -184,10 +168,7 @@ class SocketManager {
     }
   }
 
-  /**
-   * NEW: Handle continuous sensor data streaming
-   * This method can be called repeatedly for continuous updates
-   */
+
   handleContinuousSensorStream(payload) {
     try {
       const arr = Array.isArray(payload?.data) ? payload.data : [];
@@ -233,12 +214,123 @@ class SocketManager {
         // Only emit to subscribers of this device
         this.emitSensorToDevice(deviceName, enrichedData);
       }
+
+      // Process power flow data from the same batch
+      this.processPowerFlowData(arr, timestamp);
     } catch (e) {
       console.error('handleContinuousSensorStream error:', e);
     }
   }
 
 
+  processPowerFlowData(sensorData, timestamp) {
+    try {
+      let solarPower = null;
+      let gridPower = null;
+      let gensetPower = null;
+      let loadPower = null;
+
+      // Track which devices we received data for
+      const receivedDevices = new Set();
+
+      // Process each device in the batch
+      for (const entry of sensorData) {
+        const meta = entry.deviceMataData || entry.deviceMetaData || {};
+        const deviceType = meta.device_type;
+        const register = entry.register;
+
+        if (!deviceType || !register) continue;
+
+        // Solar Inverter
+        if (deviceType === 'solar_inverter') {
+          receivedDevices.add('solar');
+          if (register.W) {
+            solarPower = parseFloat(register.W) || 0;
+          } else if (register.WphA && register.WphB && register.WphC) {
+            solarPower = (parseFloat(register.WphA) || 0) + 
+                        (parseFloat(register.WphB) || 0) + 
+                        (parseFloat(register.WphC) || 0);
+          }
+        }
+        // Power Meter (Grid) - Use direct value from power meter
+        else if (deviceType === 'power_meter') {
+          receivedDevices.add('grid');
+          if (register.W) {
+            gridPower = parseFloat(register.W) || 0;
+          } else if (register.WphA && register.WphB && register.WphC) {
+            // Sum of three phases if W is not available
+            gridPower = (parseFloat(register.WphA) || 0) + 
+                       (parseFloat(register.WphB) || 0) + 
+                       (parseFloat(register.WphC) || 0);
+          }
+        }
+        // Genset Controller
+        else if (deviceType === 'genset_controller') {
+          receivedDevices.add('genset');
+          if (register.W) {
+            gensetPower = parseFloat(register.W) || 0;
+          } else if (register.WphA && register.WphB && register.WphC) {
+            // Sum of three phases if W is not available
+            gensetPower = (parseFloat(register.WphA) || 0) + 
+                         (parseFloat(register.WphB) || 0) + 
+                         (parseFloat(register.WphC) || 0);
+          }
+        }
+      }
+
+      // Use previous values for devices not received in this batch
+      const finalSolarPower = solarPower !== null ? solarPower : this.previousPowerFlowData.solar;
+      const finalGridPower = gridPower !== null ? gridPower : this.previousPowerFlowData.grid;
+      const finalGensetPower = gensetPower !== null ? gensetPower : this.previousPowerFlowData.genset;
+
+      // Calculate load (sum of solar + grid + genset)
+      loadPower = finalSolarPower + finalGridPower + finalGensetPower;
+
+      // Update previous values for next batch
+      this.previousPowerFlowData = {
+        solar: finalSolarPower,
+        grid: finalGridPower,
+        genset: finalGensetPower,
+        load: loadPower
+      };
+
+      // Prepare power flow data
+      const powerFlowData = {
+        solar: finalSolarPower,
+        grid: finalGridPower,
+        genset: finalGensetPower,
+        load: loadPower,
+        timestamp: timestamp,
+        receivedDevices: Array.from(receivedDevices), // Track which devices sent data
+        status: {
+          solar: finalSolarPower > 0 ? 'Active' : 'Inactive',
+          grid: finalGridPower > 0 ? 'Active' : 'Inactive',
+          genset: finalGensetPower > 0 ? 'Running' : 'Stopped',
+          load: loadPower > 0 ? 'Active' : 'No Load'
+        }
+      };
+
+      // Emit power flow data to subscribers
+      this.emitPowerFlowData(powerFlowData);
+      
+      // Log the processing for debugging
+      console.log(`⚡ Power Flow Processing: Received ${receivedDevices.size}/3 devices`);
+      console.log(`📊 Final Values: Solar=${finalSolarPower}kW, Grid=${finalGridPower}kW, Genset=${finalGensetPower}kW, Load=${loadPower}kW`);
+    } catch (e) {
+      console.error('processPowerFlowData error:', e);
+    }
+  }
+
+
+  emitPowerFlowData(powerFlowData) {
+    const room = 'power-flow';
+    if (!this.hasListeners(room)) {
+      // No subscribers; skip emit
+      return false;
+    }
+    this.io.to(room).emit('power-flow-data', powerFlowData);
+    return true;
+  }
 
 
 }
