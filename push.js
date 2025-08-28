@@ -96,7 +96,7 @@ const deviceTypes = [
       const deviceList = deviceBatch.map(d => d.deviceMataData.device_type).join(' + ');
       console.log(`→ Published batch: ${deviceList}`);
     }
-  }, 3000);
+  }, 5000);
 
   process.on("SIGINT", async () => {
     console.log("\n🛑 Stopping publisher...");

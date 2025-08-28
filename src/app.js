@@ -15,11 +15,13 @@ const socketManager = require('./services/socket/socketManager');
 const natsClient = require('./services/nats/natsClient');
 const networkManager = require('./services/network/networkManager');
 const serialManager = require('./services/serial/serialManager');
+const PowerFlowSocketService = require('./services/powerFlowSocketService');
 
 const deviceRoutes = require('./api/routes/devices');
 const connectivityRoutes = require('./api/routes/connectivity');
 const parametersRoutes = require('./api/routes/parameters');
 const authRoutes = require('./api/routes/auth');
+const powerFlowRoutes = require('./api/routes/powerFlow');
 const { authenticateToken } = require('./middleware/authMiddleware');
 // const serialRoutes = require('./api/routes/serial');
 
@@ -235,7 +237,8 @@ app.use('/api/auth', authRoutes);
 app.use('/api/devices', deviceRoutes);
 app.use('/api/connectivity', authenticateToken, connectivityRoutes);
 app.use('/api/parameters', authenticateToken, parametersRoutes);
-console.log(`📡 [${new Date().toISOString()}] API Routes registered: /api/auth, /api/devices, /api/connectivity, /api/parameters`);
+app.use('/api/power-flow', powerFlowRoutes);
+console.log(`📡 [${new Date().toISOString()}] API Routes registered: /api/auth, /api/devices, /api/connectivity, /api/parameters, /api/power-flow`);
 // app.use('/api/serial', serialRoutes);
 
 // Network Management API Routes
@@ -704,6 +707,19 @@ function handleSensorData(data) {
   }
 }
 
+// Initialize Power Flow Socket Service
+let powerFlowSocketService;
+
+async function initPowerFlowSocketService() {
+  try {
+    powerFlowSocketService = new PowerFlowSocketService(io);
+    await powerFlowSocketService.initialize();
+    console.log('✅ Power Flow Socket Service initialized successfully');
+  } catch (error) {
+    console.error('❌ Failed to initialize Power Flow Socket Service:', error);
+  }
+}
+
 // Start the server
 async function startServer() {
   try {
@@ -717,6 +733,9 @@ async function startServer() {
 
     // Initialize NATS connection
     await initNatsConnection();
+
+    // Initialize Power Flow Socket Service
+    await initPowerFlowSocketService();
 
     // Start the server
     server.listen(config.PORT, config.HOST, () => {
@@ -734,6 +753,11 @@ process.on('SIGINT', async () => {
   
   try {
     await natsClient.disconnect();
+    
+    if (powerFlowSocketService) {
+      await powerFlowSocketService.disconnect();
+    }
+    
     server.close(() => {
       console.log('Server closed');
       process.exit(0);
