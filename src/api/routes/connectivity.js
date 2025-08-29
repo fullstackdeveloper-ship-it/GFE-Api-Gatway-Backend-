@@ -94,9 +94,16 @@ async function testTCPConnectivity(protocol, name, target, timeoutMs) {
     // Parse the JSON response from stdout
     let testResult;
     try {
-      testResult = JSON.parse(stdout.trim());
+      // Extract JSON from stdout (it might contain additional log info)
+      const jsonMatch = stdout.trim().match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        testResult = JSON.parse(jsonMatch[0]);
+      } else {
+        throw new Error('No JSON found in output');
+      }
     } catch (parseError) {
       console.error('Failed to parse connection_tester output:', parseError);
+      console.error('Raw stdout:', stdout);
       testResult = { status: 'failed', error: 'Invalid response format' };
     }
 
@@ -127,7 +134,11 @@ async function testTCPConnectivity(protocol, name, target, timeoutMs) {
     let testResult = { status: 'failed', error: 'Unknown error' };
     if (error.stdout) {
       try {
-        testResult = JSON.parse(error.stdout.trim());
+        // Extract JSON from stdout (it might contain additional log info)
+        const jsonMatch = error.stdout.trim().match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          testResult = JSON.parse(jsonMatch[0]);
+        }
       } catch (parseError) {
         console.error('Failed to parse error output:', parseError);
       }
@@ -220,9 +231,16 @@ async function testSerialConnectivity(protocol, name, target, timeoutMs) {
     // Parse the JSON response from stdout
     let testResult;
     try {
-      testResult = JSON.parse(stdout.trim());
+      // Extract JSON from stdout (it might contain additional log info)
+      const jsonMatch = stdout.trim().match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        testResult = JSON.parse(jsonMatch[0]);
+      } else {
+        throw new Error('No JSON found in output');
+      }
     } catch (parseError) {
       console.error('Failed to parse connection_tester output:', parseError);
+      console.error('Raw stdout:', stdout);
       testResult = { status: 'failed', error: 'Invalid response format' };
     }
 
@@ -255,7 +273,11 @@ async function testSerialConnectivity(protocol, name, target, timeoutMs) {
     let testResult = { status: 'failed', error: 'Unknown error' };
     if (error.stdout) {
       try {
-        testResult = JSON.parse(error.stdout.trim());
+        // Extract JSON from stdout (it might contain additional log info)
+        const jsonMatch = error.stdout.trim().match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          testResult = JSON.parse(jsonMatch[0]);
+        }
       } catch (parseError) {
         console.error('Failed to parse error output:', parseError);
       }

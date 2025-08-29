@@ -43,13 +43,3 @@ devices_list:
     tcp_port: 502
     keep_tcp_session_open: true
     concurrent_access: true
-  - device_name: saddasdasdsa
-    reference: GFE-100KTL
-    protocol: modbus_tcp
-    interface: eth1
-    device_id: 221
-    response_timeout: 0.5
-    device_ip: 192.168.1.22
-    tcp_port: 502
-    keep_tcp_session_open: true
-    concurrent_access: true
