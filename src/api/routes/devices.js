@@ -179,9 +179,8 @@ router.put('/:deviceName', async (req, res) => {
       delete updatedDevice.role;
     }
 
-    // 🔐 Validate - exclude current device from duplicate checks
-    const devicesToCheck = data.devices_list.filter(d => d.device_name !== req.params.deviceName);
-    const { error } = validateDeviceSchema(updatedDevice, devicesToCheck);
+    // 🔐 Validate
+    const { error } = validateDeviceSchema(updatedDevice, data.devices_list);
     if (error) return res.status(400).json({ error: error.message });
 
     // ✅ Apply update
