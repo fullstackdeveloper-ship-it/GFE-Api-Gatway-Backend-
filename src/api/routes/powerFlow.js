@@ -4,16 +4,27 @@ const SQLiteService = require('../../services/sqliteService');
 
 const sqliteService = new SQLiteService();
 
-// Get power flow historical data (last 24 hours by default)
+// Get power flow historical data (10 minutes to 2 hours by default)
 router.get('/history', async (req, res) => {
   try {
-    const hours = parseInt(req.query.hours) || 24;
+    const hours = parseFloat(req.query.hours) || 1/6; // Default: 10 minutes
     const result = await sqliteService.getPowerFlowHistory(hours);
     
     if (result.success) {
+      // Create human-readable time description
+      let timeDescription;
+      if (hours < 1) {
+        const minutes = Math.round(hours * 60);
+        timeDescription = `last ${minutes} minute${minutes !== 1 ? 's' : ''}`;
+      } else if (hours === 1) {
+        timeDescription = 'last 1 hour';
+      } else {
+        timeDescription = `last ${hours} hours`;
+      }
+      
       res.json({
         success: true,
-        message: `Power flow history for last ${hours} hours`,
+        message: `Power flow history for ${timeDescription}`,
         data: result.data,
         count: result.count
       });

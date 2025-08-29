@@ -31,35 +31,29 @@ async function getReferencesFromCatalog() {
     }
     if (!Array.isArray(data)) return [];
 
-    // Collect all device objects from each entry
-    const devices = data.flatMap(entry =>
-      entry && typeof entry === 'object' ? Object.values(entry) : []
-    ).filter(d => d && typeof d === 'object');
-
-    // Group by vendor → unique references per vendor
-    const map = new Map();
-    for (const d of devices) {
-      const vendor = d.device_vendor || 'Unknown';
-      const ref = d.reference;
-      if (!ref) continue;
-      if (!map.has(vendor)) map.set(vendor, new Set());
-      map.get(vendor).add(ref);
+    // Transform data to have device types as keys
+    const transformedData = {};
+    
+    // Process each entry in the data array
+    for (const entry of data) {
+      if (entry && typeof entry === 'object') {
+        // Each entry should have device types as keys
+        for (const [deviceType, deviceInfo] of Object.entries(entry)) {
+          if (deviceInfo && typeof deviceInfo === 'object' && deviceInfo.reference) {
+            transformedData[deviceType] = {
+              device_vendor: deviceInfo.device_vendor || 'Unknown',
+              reference: deviceInfo.reference,
+              protocol: deviceInfo.protocol || 'modbus_tcp'
+            };
+          }
+        }
+      }
     }
 
-    // Build the response: [{ vendor, references: [{reference}, ...] }]
-    const result = Array.from(map.entries()).map(([vendor, refSet]) => ({
-      vendor,
-      references: Array.from(refSet).map(reference => ({ reference }))
-    }));
-
-    // Optional: sort vendors and references for stable output
-    result.sort((a, b) => a.vendor.localeCompare(b.vendor));
-    for (const g of result) g.references.sort((a, b) => a.reference.localeCompare(b.reference));
-
-    return result;
+    return transformedData;
   } catch (e) {
     console.error('Error reading reference catalog:', e.message);
-    return [];
+    return {};
   }
 }
 
@@ -91,7 +85,7 @@ router.get('/', async (req, res) => {
 
     const refsFromJson = await getReferencesFromCatalog();
 
-    // Group and enrich devices
+    // Group and enrich devices (keep original device details)
     const grouped = {};
     for (const dev of devices) {
       const iface = dev.interface || 'unknown';
@@ -107,9 +101,12 @@ router.get('/', async (req, res) => {
       grouped[iface].push(enrichedDevice);
     }
 
+    // Return both device details and transformed reference catalog
     res.json({
       devices: grouped,
-      references: refsFromJson
+      references: refsFromJson,
+      batch_id: Date.now().toString(),
+      time_stamp: new Date().toISOString().replace('T', ' ').substring(0, 19)
     });
   } catch (err) {
     console.error('Device list error:', err.message);
@@ -182,8 +179,9 @@ router.put('/:deviceName', async (req, res) => {
       delete updatedDevice.role;
     }
 
-    // 🔐 Validate
-    const { error } = validateDeviceSchema(updatedDevice, data.devices_list);
+    // 🔐 Validate - exclude current device from duplicate checks
+    const devicesToCheck = data.devices_list.filter(d => d.device_name !== req.params.deviceName);
+    const { error } = validateDeviceSchema(updatedDevice, devicesToCheck);
     if (error) return res.status(400).json({ error: error.message });
 
     // ✅ Apply update

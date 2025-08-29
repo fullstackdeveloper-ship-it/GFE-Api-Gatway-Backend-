@@ -33,33 +33,23 @@ devices_list:
     tcp_port: 502
     keep_tcp_seasion_open: true
     cocurrent_access: true
-  - device_name: testing2
-    reference: GENSET_CONTROLLER-MODEL-001
+  - device_name: zfdcsadfasfdasadasd
+    reference: EMPro
     protocol: modbus_tcp
     interface: eth1
-    device_id: 222
+    device_id: 27
     response_timeout: 0.5
-    device_ip: 192.1.24.4
+    device_ip: 192.1.3.11
     tcp_port: 502
-    keep_tcp_seasion_open: true
-    cocurrent_access: true
-  - device_name: tesinuaihsidah
-    reference: GENSET_CONTROLLER-MODEL-001
-    protocol: modbus_tcp
-    interface: eth1
-    device_id: 232
-    response_timeout: 0.5
-    device_ip: 192.13.4.4
-    tcp_port: 502
-    keep_tcp_seasion_open: true
-    cocurrent_access: true
-  - device_name: dsdsad
-    reference: GENSET_CONTROLLER-MODEL-001
+    keep_tcp_session_open: true
+    concurrent_access: true
+  - device_name: saddasdasdsa
+    reference: GFE-100KTL
     protocol: modbus_tcp
     interface: eth1
     device_id: 221
     response_timeout: 0.5
-    device_ip: 192.1.3.4
+    device_ip: 192.168.1.22
     tcp_port: 502
-    keep_tcp_seasion_open: false
-    cocurrent_access: false
+    keep_tcp_session_open: true
+    concurrent_access: true

@@ -6,6 +6,7 @@ const path = require('path');
 const fs = require('fs').promises;
 const { exec } = require('child_process');
 const util = require('util');
+const morgan = require('morgan');
 require('dotenv').config();
 
 const execAsync = util.promisify(exec);
@@ -91,6 +92,9 @@ async function writeConfig(configData) {
 app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '../templates')));
+
+// Morgan middleware for simple API request logging
+app.use(morgan(':method :url :status :response-time ms'));
 
 // Routes
 app.get('/', (req, res) => {

@@ -35,6 +35,9 @@ class SQLiteService {
 
   async getPowerFlowHistory(hours = 24) {
     return new Promise((resolve, reject) => {
+      // Convert hours to minutes for more precise time calculations
+      const minutes = Math.round(hours * 60);
+      
       const query = `
         SELECT 
           id,
@@ -47,7 +50,7 @@ class SQLiteService {
           received_devices,
           created_at
         FROM power_flow_analysis 
-        WHERE created_at >= datetime('now', '-${hours} hours')
+        WHERE created_at >= datetime('now', '-${minutes} minutes')
         ORDER BY created_at ASC
       `;
       
