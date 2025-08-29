@@ -1,14 +1,14 @@
 const express = require('express');
 const router = express.Router();
-const PostgresService = require('../../services/postgresService');
+const SQLiteService = require('../../services/sqliteService');
 
-const postgresService = new PostgresService();
+const sqliteService = new SQLiteService();
 
 // Get power flow historical data (last 24 hours by default)
 router.get('/history', async (req, res) => {
   try {
     const hours = parseInt(req.query.hours) || 24;
-    const result = await postgresService.getPowerFlowHistory(hours);
+    const result = await sqliteService.getPowerFlowHistory(hours);
     
     if (result.success) {
       res.json({

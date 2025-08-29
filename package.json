@@ -6,10 +6,7 @@
   "scripts": {
     "start": "node src/app.js",
     "dev": "nodemon src/app.js",
-    "test": "node test-console-logging.js",
-    "test-network": "node test-network-manager.js",
-    "test-nats": "node test-nats.js",
-    "test-socket": "node test-socket.js"
+    "push": "node push.js"
   },
   "keywords": [
     "network",
@@ -23,6 +20,7 @@
   "author": "Green Project Team",
   "license": "MIT",
   "dependencies": {
+
     "child_process": "^1.0.2",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
@@ -31,9 +29,9 @@
     "js-yaml": "^4.1.0",
     "jsonwebtoken": "^9.0.2",
     "nats": "^2.19.0",
-    "pg": "^8.16.3",
     "serialport": "^12.0.0",
     "socket.io": "^4.7.2",
+    "sqlite3": "^5.1.7",
     "winston": "^3.11.0"
   },
   "devDependencies": {

@@ -3,7 +3,7 @@ const path = require('path');
 
 class SQLiteService {
   constructor() {
-    const dbPath = process.env.DB_PATH || '../data/sqlite/power_flow.db';
+    const dbPath = process.env.DB_PATH || '../../data/sqlite/power_flow.db';
     
     // Ensure data directory exists
     const fs = require('fs');
@@ -22,13 +22,15 @@ class SQLiteService {
     
     // Enable resource-optimized performance for Debian 11 with 1GB RAM
     this.db.run('PRAGMA foreign_keys = OFF'); // Disable for performance
-    this.db.run('PRAGMA journal_mode = DELETE'); // Use DELETE mode for lower memory usage
+    this.db.run('PRAGMA journal_mode = WAL'); // Use WAL mode for better concurrency
     this.db.run('PRAGMA synchronous = NORMAL'); // Good balance of performance/reliability
     this.db.run('PRAGMA cache_size = 2000'); // Reduced cache for 1GB RAM (2MB)
     this.db.run('PRAGMA temp_store = MEMORY'); // Use memory for temp tables
     this.db.run('PRAGMA mmap_size = 268435456'); // 256MB memory mapping
     this.db.run('PRAGMA page_size = 4096'); // Standard page size
     this.db.run('PRAGMA auto_vacuum = INCREMENTAL'); // Incremental vacuum for efficiency
+    this.db.run('PRAGMA busy_timeout = 30000'); // Wait up to 30 seconds for locks
+    this.db.run('PRAGMA locking_mode = NORMAL'); // Use normal locking mode
   }
 
   async getPowerFlowHistory(hours = 24) {
@@ -49,16 +51,23 @@ class SQLiteService {
         ORDER BY created_at ASC
       `;
       
-      this.db.all(query, (err, rows) => {
-        if (err) {
-          console.error('❌ Error fetching power flow history:', err);
-          resolve({
-            success: false,
-            error: err.message,
-            data: []
-          });
-          return;
-        }
+      // Add retry logic for database locks
+      const attemptQuery = (retryCount = 0) => {
+        this.db.all(query, (err, rows) => {
+          if (err) {
+            if (err.code === 'SQLITE_BUSY' && retryCount < 3) {
+              console.log(`⏳ Database busy, retrying in 1s... (attempt ${retryCount + 1}/3)`);
+              setTimeout(() => attemptQuery(retryCount + 1), 1000);
+              return;
+            }
+            console.error('❌ Error fetching power flow history:', err);
+            resolve({
+              success: false,
+              error: err.message,
+              data: []
+            });
+            return;
+          }
         
         // Format data for frontend chart
         const formattedData = rows.map(row => {
@@ -83,8 +92,11 @@ class SQLiteService {
           count: formattedData.length
         });
       });
-    });
-  }
+    };
+    
+    attemptQuery();
+  });
+}
 
 
 
