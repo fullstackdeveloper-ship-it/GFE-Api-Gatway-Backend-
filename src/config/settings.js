@@ -28,6 +28,9 @@ const config = {
   // Blueprint Configuration
   BLUEPRINT_PATH: process.env.BLUEPRINT_PATH || './gfe-iot/blueprints',
   
+  // Devices Configuration
+  DEVICES_YAML_PATH: process.env.DEVICES_YAML_PATH || './gfe-iot/devices/device.yaml',
+  
   // Logging Configuration
   LOG_LEVEL: process.env.LOG_LEVEL || 'info',
   LOG_FORMAT: '%(asctime)s - %(name)s - %(levelname)s - %(message)s'

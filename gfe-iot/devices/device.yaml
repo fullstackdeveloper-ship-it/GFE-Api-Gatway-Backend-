@@ -1,22 +1,66 @@
 devices_list:
-  - device_name: Testing1
+  - device_name: Inverter 01
+    reference: GFE-100KTL
+    protocol: modbus_tcp
+    interface: eth1
+    device_ip: 192.168.4.110
+    tcp_port: 502
+    device_id: 10
+    response_timeout: 0.5
+    keep_tcp_session_open: false
+    concurrent_access: false
+
+  - device_name: Inverter 02
+    reference: GFE-100KTL
+    protocol: modbus_tcp
+    interface: eth1
+    device_ip: 192.168.4.110
+    tcp_port: 502
+    device_id: 11
+    response_timeout: 0.5
+    keep_tcp_session_open: false
+    concurrent_access: false
+
+  - device_name: Inverter 03
+    reference: GFE-100KTL
+    protocol: modbus_tcp
+    interface: eth1
+    device_ip: 192.168.4.110
+    tcp_port: 502
+    device_id: 12
+    response_timeout: 0.5
+    keep_tcp_session_open: false
+    concurrent_access: false
+
+  - device_name: Generator 01
     reference: EMPro
     protocol: modbus_tcp
     interface: eth1
-    device_id: 111
-    response_timeout: 0.5
-    role: generator_power_meter
-    device_ip: 192.168.1.1
+    device_ip: 192.168.4.110
     tcp_port: 502
-    keep_tcp_session_open: true
-    concurrent_access: true
-  - device_name: Test Device 02
-    device_id: 998
+    device_id: 20
+    response_timeout: 0.5
+    keep_tcp_session_open: false
+    concurrent_access: false
+
+  - device_name: Generator 02
     reference: EMPro
     protocol: modbus_tcp
     interface: eth1
-    response_timeout: 0.5
-    device_ip: 192.168.1.101
+    device_ip: 192.168.4.110
     tcp_port: 502
-    keep_tcp_session_open: true
-    concurrent_access: true
+    device_id: 21
+    response_timeout: 0.5
+    keep_tcp_session_open: false
+    concurrent_access: false
+
+  - device_name: Grid
+    reference: EMPro
+    protocol: modbus_tcp
+    interface: eth1
+    device_ip: 192.168.4.110
+    tcp_port: 502
+    device_id: 30
+    response_timeout: 0.5
+    keep_tcp_session_open: false
+    concurrent_access: false

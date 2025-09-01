@@ -17,6 +17,7 @@ const natsClient = require('./services/nats/natsClient');
 const networkManager = require('./services/network/networkManager');
 const serialManager = require('./services/serial/serialManager');
 const PowerFlowSocketService = require('./services/powerFlowSocketService');
+const AutoTableCreationService = require('./services/autoTableCreationService');
 
 const deviceRoutes = require('./api/routes/devices');
 const connectivityRoutes = require('./api/routes/connectivity');
@@ -715,6 +716,7 @@ function handleSensorData(data) {
 
 // Initialize Power Flow Socket Service
 let powerFlowSocketService;
+let autoTableCreationService;
 
 async function initPowerFlowSocketService() {
   try {
@@ -723,6 +725,16 @@ async function initPowerFlowSocketService() {
     console.log('✅ Power Flow Socket Service initialized successfully');
   } catch (error) {
     console.error('❌ Failed to initialize Power Flow Socket Service:', error);
+  }
+}
+
+async function initAutoTableCreationService() {
+  try {
+    autoTableCreationService = new AutoTableCreationService();
+    await autoTableCreationService.initialize();
+    console.log('✅ Auto Table Creation Service initialized successfully');
+  } catch (error) {
+    console.error('❌ Failed to initialize Auto Table Creation Service:', error);
   }
 }
 
@@ -739,13 +751,14 @@ async function startServer() {
     console.log(`NATS Topic: ${config.NATS_TOPIC}`);
     console.log(`NATS Control Response Topic: ${process.env.NATS_CONTROL_RESPONSE_TOPIC || 'control.response'}`);
 
+    // Initialize Auto Table Creation Service (before NATS)
+    await initAutoTableCreationService();
+
     // Initialize NATS connection
     await initNatsConnection();
 
     // Initialize Power Flow Socket Service
     await initPowerFlowSocketService();
-
-
 
     // Start the server
     server.listen(config.PORT, config.HOST, () => {
@@ -766,6 +779,10 @@ process.on('SIGINT', async () => {
     
     if (powerFlowSocketService) {
       await powerFlowSocketService.disconnect();
+    }
+    
+    if (autoTableCreationService) {
+      await autoTableCreationService.shutdown();
     }
     
     server.close(() => {

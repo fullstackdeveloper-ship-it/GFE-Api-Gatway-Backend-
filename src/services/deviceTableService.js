@@ -72,20 +72,28 @@ class DeviceTableService {
 
     try {
       const files = fs.readdirSync(this.blueprintPath);
-      const blueprintFile = files.find(file => file.includes(reference.replace('-', '_')));
+      const yamlFiles = files.filter(file => file.endsWith('.yaml'));
       
-      if (!blueprintFile) {
-        throw new Error(`Blueprint file not found for reference: ${reference}`);
+      // Loop through all YAML files to find the one with matching reference
+      for (const file of yamlFiles) {
+        try {
+          const blueprintPath = path.join(this.blueprintPath, file);
+          const fileContent = fs.readFileSync(blueprintPath, 'utf8');
+          const blueprint = yaml.load(fileContent);
+          
+          // Check if this blueprint has the matching reference
+          if (blueprint && blueprint.header && blueprint.header.reference === reference) {
+            this.blueprintCache.set(reference, blueprint);
+            console.log(`✅ Loaded blueprint for reference: ${reference} from file: ${file}`);
+            return blueprint;
+          }
+        } catch (fileError) {
+          console.warn(`⚠️ Warning: Could not read blueprint file ${file}:`, fileError.message);
+          continue; // Skip to next file if there's an error reading this one
+        }
       }
-
-      const blueprintPath = path.join(this.blueprintPath, blueprintFile);
-      const fileContent = fs.readFileSync(blueprintPath, 'utf8');
-      const blueprint = yaml.load(fileContent);
       
-      this.blueprintCache.set(reference, blueprint);
-      console.log(`✅ Loaded blueprint for reference: ${reference}`);
-      
-      return blueprint;
+      throw new Error(`Blueprint file not found for reference: ${reference}`);
     } catch (error) {
       console.error(`❌ Error loading blueprint for reference ${reference}:`, error.message);
       throw error;
@@ -193,6 +201,30 @@ class DeviceTableService {
         }
       });
     });
+  }
+
+  async tableExists(deviceName) {
+    try {
+      const tableName = await this.getDeviceTableName(deviceName);
+      if (!tableName) {
+        return false;
+      }
+
+      // Check if the actual table exists in the database
+      const checkQuery = `SELECT name FROM sqlite_master WHERE type='table' AND name=?`;
+      return new Promise((resolve, reject) => {
+        this.db.get(checkQuery, [tableName], (err, row) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(!!row);
+          }
+        });
+      });
+    } catch (error) {
+      console.error(`Error checking if table exists for device ${deviceName}:`, error.message);
+      return false;
+    }
   }
 
   close() {
