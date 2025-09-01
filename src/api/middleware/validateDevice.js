@@ -32,7 +32,7 @@ const rtuSchema = Joi.object({
 });
 
 // Schema validator
-const validateDeviceSchema = (device, existingDevices = []) => {
+const validateDeviceSchema = (device, existingDevices = [], originalDeviceName = null) => {
   const baseValidation = (
     device.protocol === 'modbus_tcp' ? tcpSchema :
     device.protocol === 'modbus_rtu' ? rtuSchema :
@@ -52,9 +52,11 @@ const validateDeviceSchema = (device, existingDevices = []) => {
   }
 
   // Check for duplicate device_id (should be unique across all devices)
+  // When editing, exclude the original device from duplicate check
   const duplicateDeviceId = existingDevices.find(d => 
     d.device_id === device.device_id && 
-    d.device_name !== device.device_name
+    d.device_name !== device.device_name &&
+    (!originalDeviceName || d.device_name !== originalDeviceName)
   );
   if (duplicateDeviceId) {
     return {

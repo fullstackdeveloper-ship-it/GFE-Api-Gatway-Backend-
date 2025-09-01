@@ -1,5 +1,5 @@
 devices_list:
-  - device_name: Inverter 01
+  - device_name: Inv1
     reference: GFE-100KTL
     protocol: modbus_tcp
     interface: eth1
@@ -9,8 +9,7 @@ devices_list:
     response_timeout: 0.5
     keep_tcp_session_open: false
     concurrent_access: false
-
-  - device_name: Inverter 02
+  - device_name: Inv2
     reference: GFE-100KTL
     protocol: modbus_tcp
     interface: eth1
@@ -20,8 +19,7 @@ devices_list:
     response_timeout: 0.5
     keep_tcp_session_open: false
     concurrent_access: false
-
-  - device_name: Inverter 03
+  - device_name: Inv3
     reference: GFE-100KTL
     protocol: modbus_tcp
     interface: eth1
@@ -31,8 +29,7 @@ devices_list:
     response_timeout: 0.5
     keep_tcp_session_open: false
     concurrent_access: false
-
-  - device_name: Generator 01
+  - device_name: Gen1
     reference: EMPro
     protocol: modbus_tcp
     interface: eth1
@@ -42,8 +39,7 @@ devices_list:
     response_timeout: 0.5
     keep_tcp_session_open: false
     concurrent_access: false
-
-  - device_name: Generator 02
+  - device_name: Gen2
     reference: EMPro
     protocol: modbus_tcp
     interface: eth1
@@ -53,7 +49,6 @@ devices_list:
     response_timeout: 0.5
     keep_tcp_session_open: false
     concurrent_access: false
-
   - device_name: Grid
     reference: EMPro
     protocol: modbus_tcp

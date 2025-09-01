@@ -195,8 +195,8 @@ router.put('/:deviceName', async (req, res) => {
       delete updatedDevice.role;
     }
 
-    // 🔐 Validate
-    const { error } = validateDeviceSchema(updatedDevice, data.devices_list);
+    // 🔐 Validate - pass original device name to exclude it from duplicate checks
+    const { error } = validateDeviceSchema(updatedDevice, data.devices_list, originalDevice.device_name);
     if (error) return res.status(400).json({ error: error.message });
 
     // Handle device table updates if device name changed

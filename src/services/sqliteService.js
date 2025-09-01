@@ -1,9 +1,10 @@
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
+const config = require('../config/settings');
 
 class SQLiteService {
   constructor() {
-    const dbPath = process.env.DB_PATH || '../../data/sqlite/power_flow.db';
+    const dbPath = process.env.GLOBAL_DB_PATH || config.GLOBAL_DB_PATH || '../../data/sqlite/power_flow.db';
     
     // Ensure data directory exists
     const fs = require('fs');
@@ -31,6 +32,9 @@ class SQLiteService {
     this.db.run('PRAGMA auto_vacuum = INCREMENTAL'); // Incremental vacuum for efficiency
     this.db.run('PRAGMA busy_timeout = 30000'); // Wait up to 30 seconds for locks
     this.db.run('PRAGMA locking_mode = NORMAL'); // Use normal locking mode
+    
+    // Initialize required tables
+    this.initializeTables();
   }
 
   async getPowerFlowHistory(hours = 24) {
@@ -101,7 +105,44 @@ class SQLiteService {
   });
 }
 
-
+  initializeTables() {
+    // Create power_flow_analysis table if it doesn't exist
+    const powerFlowTableQuery = `
+      CREATE TABLE IF NOT EXISTS power_flow_analysis (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        solar REAL DEFAULT 0,
+        grid REAL DEFAULT 0,
+        genset REAL DEFAULT 0,
+        load REAL DEFAULT 0,
+        timestamp INTEGER NOT NULL,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        batch_id TEXT,
+        received_devices TEXT
+      );
+    `;
+    
+    // Create index for timestamp for better query performance
+    const indexQuery = `
+      CREATE INDEX IF NOT EXISTS idx_power_flow_timestamp 
+      ON power_flow_analysis(timestamp);
+    `;
+    
+    this.db.run(powerFlowTableQuery, (err) => {
+      if (err) {
+        console.error('❌ Error creating power_flow_analysis table:', err);
+      } else {
+        console.log('✅ Power flow analysis table ready');
+      }
+    });
+    
+    this.db.run(indexQuery, (err) => {
+      if (err) {
+        console.error('❌ Error creating power flow index:', err);
+      } else {
+        console.log('✅ Power flow index ready');
+      }
+    });
+  }
 
   async close() {
     return new Promise((resolve) => {
