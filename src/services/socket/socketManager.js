@@ -1,3 +1,5 @@
+const { processPowerFlowData } = require('../../utils/powerFlowUtils');
+
 class SocketManager {
   constructor() {
     this.io = null;
@@ -225,73 +227,25 @@ class SocketManager {
 
   processPowerFlowData(sensorData, timestamp) {
     try {
-      let solarPower = null;
-      let gridPower = null;
-      let gensetPower = null;
-      let loadPower = null;
-
-      // Track which devices we received data for
-      const receivedDevices = new Set();
-
-      // Process each device in the batch
-      for (const entry of sensorData) {
-        const meta = entry.deviceMataData || entry.deviceMetaData || {};
-        const deviceType = meta.device_type;
-        const register = entry.register;
-
-        if (!deviceType || !register) continue;
-
-        // Solar Inverter
-        if (deviceType === 'solar_inverter') {
-          receivedDevices.add('solar');
-          if (register.W) {
-            solarPower = parseFloat(register.W) || 0;
-          } else if (register.WphA && register.WphB && register.WphC) {
-            solarPower = (parseFloat(register.WphA) || 0) + 
-                        (parseFloat(register.WphB) || 0) + 
-                        (parseFloat(register.WphC) || 0);
-          }
-        }
-        // Power Meter (Grid) - Use direct value from power meter
-        else if (deviceType === 'power_meter') {
-          receivedDevices.add('grid');
-          if (register.W) {
-            gridPower = parseFloat(register.W) || 0;
-          } else if (register.WphA && register.WphB && register.WphC) {
-            // Sum of three phases if W is not available
-            gridPower = (parseFloat(register.WphA) || 0) + 
-                       (parseFloat(register.WphB) || 0) + 
-                       (parseFloat(register.WphC) || 0);
-          }
-        }
-        // Genset Controller
-        else if (deviceType === 'genset_controller') {
-          receivedDevices.add('genset');
-          if (register.W) {
-            gensetPower = parseFloat(register.W) || 0;
-          } else if (register.WphA && register.WphB && register.WphC) {
-            // Sum of three phases if W is not available
-            gensetPower = (parseFloat(register.WphA) || 0) + 
-                         (parseFloat(register.WphB) || 0) + 
-                         (parseFloat(register.WphC) || 0);
-          }
-        }
-      }
-
-      // Use previous values for devices not received in this batch
-      const finalSolarPower = solarPower !== null ? solarPower : this.previousPowerFlowData.solar;
-      const finalGridPower = gridPower !== null ? gridPower : this.previousPowerFlowData.grid;
-      const finalGensetPower = gensetPower !== null ? gensetPower : this.previousPowerFlowData.genset;
-
-      // Calculate load (sum of solar + grid + genset)
-      loadPower = finalSolarPower + finalGridPower + finalGensetPower;
+      // Use shared utility for consistent processing
+      const result = processPowerFlowData(sensorData);
+      
+      // Use previous values for device types not received in this batch
+      const hasSolar = result.receivedDevices.includes('solar');
+      const hasGrid = result.receivedDevices.includes('grid');
+      const hasGenset = result.receivedDevices.includes('genset');
+      
+      const finalSolarPower = hasSolar ? result.solar : this.previousPowerFlowData.solar;
+      const finalGridPower = hasGrid ? result.grid : this.previousPowerFlowData.grid;
+      const finalGensetPower = hasGenset ? result.genset : this.previousPowerFlowData.genset;
+      const finalLoadPower = finalSolarPower + finalGridPower + finalGensetPower;
 
       // Update previous values for next batch
       this.previousPowerFlowData = {
         solar: finalSolarPower,
         grid: finalGridPower,
         genset: finalGensetPower,
-        load: loadPower
+        load: finalLoadPower
       };
 
       // Prepare power flow data
@@ -299,14 +253,14 @@ class SocketManager {
         solar: finalSolarPower,
         grid: finalGridPower,
         genset: finalGensetPower,
-        load: loadPower,
+        load: finalLoadPower,
         timestamp: timestamp,
-        receivedDevices: Array.from(receivedDevices), // Track which devices sent data
+        receivedDevices: result.receivedDevices, // Track which devices sent data
         status: {
           solar: finalSolarPower > 0 ? 'Active' : 'Inactive',
           grid: finalGridPower > 0 ? 'Active' : 'Inactive',
           genset: finalGensetPower > 0 ? 'Running' : 'Stopped',
-          load: loadPower > 0 ? 'Active' : 'No Load'
+          load: finalLoadPower > 0 ? 'Active' : 'No Load'
         }
       };
 
@@ -314,8 +268,8 @@ class SocketManager {
       this.emitPowerFlowData(powerFlowData);
       
       // Log the processing for debugging
-      console.log(`⚡ Power Flow Processing: Received ${receivedDevices.size}/3 devices`);
-      console.log(`📊 Final Values: Solar=${finalSolarPower}kW, Grid=${finalGridPower}kW, Genset=${finalGensetPower}kW, Load=${loadPower}kW`);
+      console.log(`⚡ Power Flow Processing: Received ${result.receivedDevices.length}/3 devices`);
+      console.log(`📊 Final Values: Solar=${finalSolarPower}kW, Grid=${finalGridPower}kW, Genset=${finalGensetPower}kW, Load=${finalLoadPower}kW`);
     } catch (e) {
       console.error('processPowerFlowData error:', e);
     }

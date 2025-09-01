@@ -1,5 +1,6 @@
 const { connect } = require('nats');
 const SQLiteService = require('./sqliteService');
+const { processPowerFlowData } = require('../utils/powerFlowUtils');
 
 class PowerFlowSocketService {
   constructor(io) {
@@ -73,102 +74,25 @@ class PowerFlowSocketService {
 
   processPowerFlowData(sensorData) {
     try {
-      let solarPower = 0;
-      let gridPower = 0;
-      let gensetPower = 0;
-      let loadPower = 0;
-
-      // Track which device types we received data for
-      const receivedDevices = new Set();
-      
-      // Track individual device counts for logging
-      const deviceCounts = {
-        solar_inverter: 0,
-        power_meter: 0,
-        genset_controller: 0
-      };
-
-      // Process each device in the batch
-      for (const entry of sensorData.data) {
-        const meta = entry.deviceMataData || entry.deviceMetaData || {};
-        const deviceType = meta.device_type;
-        const register = entry.register;
-
-        if (!deviceType || !register) continue;
-
-        // Count devices by type
-        if (deviceCounts.hasOwnProperty(deviceType)) {
-          deviceCounts[deviceType]++;
-        }
-
-        // Solar Inverter - SUM all solar devices
-        if (deviceType === 'solar_inverter') {
-          receivedDevices.add('solar');
-          let devicePower = 0;
-          
-          if (register.W) {
-            devicePower = parseFloat(register.W) || 0;
-          } else if (register.WphA && register.WphB && register.WphC) {
-            devicePower = (parseFloat(register.WphA) || 0) + 
-                         (parseFloat(register.WphB) || 0) + 
-                         (parseFloat(register.WphC) || 0);
-          }
-          
-          solarPower += devicePower;
-        }
-        
-        // Power Meter (Grid) - SUM all grid devices
-        else if (deviceType === 'power_meter') {
-          receivedDevices.add('grid');
-          let devicePower = 0;
-          
-          if (register.W) {
-            devicePower = parseFloat(register.W) || 0;
-          } else if (register.WphA && register.WphB && register.WphC) {
-            devicePower = (parseFloat(register.WphA) || 0) + 
-                         (parseFloat(register.WphB) || 0) + 
-                         (parseFloat(register.WphC) || 0);
-          }
-          
-          gridPower += devicePower;
-        }
-        
-        // Genset Controller - SUM all genset devices
-        else if (deviceType === 'genset_controller') {
-          receivedDevices.add('genset');
-          let devicePower = 0;
-          
-          if (register.W) {
-            devicePower = parseFloat(register.W) || 0;
-          } else if (register.WphA && register.WphB && register.WphC) {
-            devicePower = (parseFloat(register.WphA) || 0) + 
-                         (parseFloat(register.WphB) || 0) + 
-                         (parseFloat(register.WphC) || 0);
-          }
-          
-          gensetPower += devicePower;
-        }
-      }
-
-      // Calculate total load (sum of all power sources)
-      loadPower = solarPower + gridPower + gensetPower;
+      // Use shared utility for consistent processing
+      const result = processPowerFlowData(sensorData.data);
 
       // Prepare real-time data
       const realTimeData = {
         timestamp: sensorData.metadata?.timestamp || Date.now(),
         time: new Date(sensorData.metadata?.timestamp || Date.now()).toISOString(),
-        solar: Math.round(solarPower * 100) / 100, // Round to 2 decimal places
-        grid: Math.round(gridPower * 100) / 100,
-        genset: Math.round(gensetPower * 100) / 100,
-        load: Math.round(loadPower * 100) / 100,
+        solar: result.solar,
+        grid: result.grid,
+        genset: result.genset,
+        load: result.load,
         batchId: sensorData.metadata?.batch_id,
-        receivedDevices: Array.from(receivedDevices),
-        deviceCounts: deviceCounts, // Include device counts for debugging
+        receivedDevices: result.receivedDevices,
+        deviceCounts: result.deviceCounts, // Include device counts for debugging
         status: {
-          solar: solarPower > 0 ? 'Active' : 'Inactive',
-          grid: gridPower > 0 ? 'Active' : 'Inactive',
-          genset: gensetPower > 0 ? 'Running' : 'Stopped',
-          load: loadPower > 0 ? 'Active' : 'No Load'
+          solar: result.solar > 0 ? 'Active' : 'Inactive',
+          grid: result.grid > 0 ? 'Active' : 'Inactive',
+          genset: result.genset > 0 ? 'Running' : 'Stopped',
+          load: result.load > 0 ? 'Active' : 'No Load'
         }
       };
 
@@ -176,12 +100,12 @@ class PowerFlowSocketService {
       this.io.emit('power-flow-update', realTimeData);
       
       // Enhanced logging with device counts
-      const deviceSummary = Object.entries(deviceCounts)
+      const deviceSummary = Object.entries(result.deviceCounts)
         .filter(([_, count]) => count > 0)
         .map(([type, count]) => `${type}:${count}`)
         .join(', ');
       
-      console.log(`⚡ Real-time Power Flow [${deviceSummary}]: Solar=${solarPower}W, Grid=${gridPower}W, Genset=${gensetPower}W, Load=${loadPower}W`);
+      console.log(`⚡ Real-time Power Flow [${deviceSummary}]: Solar=${result.solar}W, Grid=${result.grid}W, Genset=${result.genset}W, Load=${result.load}W`);
       
     } catch (error) {
       console.error('❌ Error processing real-time power flow data:', error);

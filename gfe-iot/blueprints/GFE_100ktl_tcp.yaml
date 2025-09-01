@@ -1,0 +1,759 @@
+header:
+  device_type: solar_inverter
+  device_vendor: GFE
+  reference: GFE-100KTL
+  protocol: modbus_tcp
+  byte_order: big
+  word_order: big
+
+registers:
+- id: 249a0b0f-fe83-4bbf-bcf3-cc7ceb1c1929
+  short_name: W
+  long_name: W
+  description: W
+  address: 3000
+  function_code: 0x04
+  format: FLOAT32
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1
+  unit: W
+
+- id: b89c24c8-83cd-4537-a57a-e2f0a89faa6a
+  short_name: WphA
+  long_name: Active Power Phase A
+  description: Active Power Phase A
+  address: 3002
+  function_code: 0x04
+  format: FLOAT32
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1
+  unit: W
+
+- id: 314055b4-70eb-4f47-a133-be7ffde7eea0
+  short_name: WphB
+  long_name: Active Power Phase B
+  description: Active Power Phase B
+  address: 3004
+  function_code: 0x04
+  format: FLOAT32
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1
+  unit: W
+
+- id: 34ce5394-093c-4268-95f8-466c6a07c47b
+  short_name: WphC
+  long_name: Active Power Phase C
+  description: Active Power Phase C
+  address: 3006
+  function_code: 0x04
+  format: FLOAT32
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1
+  unit: W
+
+- id: c3c6289c-20a6-427b-98be-90450b27a5d0
+  short_name: VAR
+  long_name: Total Reactive Power
+  description: Total Reactive Power
+  address: 3008
+  function_code: 0x04
+  format: FLOAT32
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1
+  unit: VAR
+
+- id: 04273b40-431f-4755-a733-afc92d33a9df
+  short_name: VARphA
+  long_name: Reactive Power Phase A
+  description: Reactive Power Phase A
+  address: 3010
+  function_code: 0x04
+  format: FLOAT32
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1
+  unit: VAR
+  
+- id: 90a98e49-101f-4963-bffa-fde7c4ec9740
+  short_name: VARphB
+  long_name: Reactive Power Phase B
+  description: Reactive Power Phase B
+  address: 3012
+  function_code: 0x04
+  format: FLOAT32
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1
+  unit: VAR
+
+- id: c1d9b17c-07cd-476e-b362-ee26b89e79c0
+  short_name: VARphC
+  long_name: Reactive Power Phase C
+  description: Reactive Power Phase C
+  address: 3014
+  function_code: 0x04
+  format: FLOAT32
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1
+  unit: VAR
+
+- id: 4a6a5590-1df1-4a10-b3d3-85fb8c01c918
+  short_name: VA
+  long_name: Total Apparent Power
+  description: Total Apparent Power
+  address: 3016
+  function_code: 0x04
+  format: FLOAT32
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1
+  unit: VA
+
+- id: 5667de7b-a624-439b-b358-0ab756cd22fb
+  short_name: VAphA
+  long_name: Apparent Power Phase A
+  description: Apparent Power Phase A
+  address: 3018
+  function_code: 0x04
+  format: FLOAT32
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1
+  unit: VA
+
+- id: f0819e95-a9f7-4921-a221-e8dc0c75036d
+  short_name: VAphB
+  long_name: Apparent Power Phase B
+  description: Apparent Power Phase B
+  address: 3020
+  function_code: 0x04
+  format: FLOAT32
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1
+  unit: VA
+
+- id: 0d13af68-052b-49e8-8d83-06dbcba34731
+  short_name: VAphC
+  long_name: Apparent Power Phase C
+  description: Apparent Power Phase C
+  address: 3022
+  function_code: 0x04
+  format: FLOAT32
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1
+  unit: VA
+
+- id: c31173f2-e81d-498b-a5cc-4ba9a9acf762
+  short_name: Hz
+  long_name: Frequency
+  description: Frequency
+  address: 3024
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 0.01
+  unit: Hz
+
+- id: e88de0bd-1dd3-4ee1-a020-3c38c9aea23a
+  short_name: PF
+  long_name: Power Factor
+  description: Power Factor
+  address: 3025
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 0.01
+
+- id: d91a9eb4-3c1d-4492-8182-050ca42b99af
+  short_name: PFphA
+  long_name: Power Factor Phase A
+  description: Power Factor Phase A
+  address: 3026
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 0.01
+
+- id: 3c02fc34-309c-4e02-924d-46f78c4bf8fd
+  short_name: PFphB
+  long_name: Power Factor Phase B
+  description: Power Factor Phase B
+  address: 3027
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 0.01
+
+- id: 476d1f37-3a4b-49ae-9015-fe81bdfb12aa
+  short_name: PFphC
+  long_name: Power Factor Phase C
+  description: Power Factor Phase C
+  address: 3028
+  function_code: 0x04
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 0.01
+
+- id: 8dd1e0eb-7ae3-461b-a64e-f5985b2d8276
+  short_name: PhVphA
+  long_name: Voltage Phase A
+  description: Voltage Phase A
+  address: 3029
+  function_code: 0x04
+  format: INT32
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 0.1
+  unit: V
+
+- id: 43d5ab29-003d-4250-aaba-846a932b05aa
+  short_name: PhVphB
+  long_name: Voltage Phase B
+  description: Voltage Phase B
+  address: 3031
+  function_code: 0x04
+  format: INT32
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 0.1
+  unit: V
+
+- id: 2dcb52b8-02c7-4361-b27b-a4b8deef711d
+  short_name: PhVphC
+  long_name: Voltage Phase C
+  description: Voltage Phase C
+  address: 3033
+  function_code: 0x04
+  format: INT32
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 0.1
+  unit: V
+
+- id: 5ba3e688-546b-41b8-a6c6-e29131ed2ead
+  short_name: PPVphAB
+  long_name: Voltage Phase AB
+  description: Voltage Phase AB
+  address: 3035
+  function_code: 0x04
+  format: INT32
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 0.1
+  unit: V
+
+- id: 12521627-8719-4ed4-8ce7-159ee672a1ee
+  short_name: PPVphBC
+  long_name: Voltage Phase BC
+  description: Voltage Phase BC
+  address: 3037
+  function_code: 0x04
+  format: INT32
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 0.1
+  unit: V
+
+- id: 19401d42-42e3-4cc8-b862-7a73aab2a07c
+  short_name: PPVphCA
+  long_name: Voltage Phase CA
+  description: Voltage Phase CA
+  address: 3039
+  function_code: 0x04
+  format: INT32
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 0.1
+  unit: V
+
+- id: 0d10f8be-1484-4d69-a4e9-58942bf5b240
+  short_name: WHToday
+  long_name: Today Positve Energy
+  description: Today Positve Energy
+  address: 3041
+  function_code: 0x04
+  format: INT64
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1
+  unit: Wh
+
+- id: 80dfe7ce-3053-4efd-ba60-605f32c84f0d
+  short_name: WHMonth
+  long_name: Monthly Positve Energy
+  description: Monthly Positve Energy
+  address: 3045
+  function_code: 0x04
+  format: INT64
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1
+  unit: Wh
+
+- id: 3fd0768a-15bd-46dd-abac-613e89805133
+  short_name: WHPos
+  long_name: Total Positive Energy
+  description: Total Positive Energy
+  address: 3049
+  function_code: 0x04
+  format: INT64
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1
+  unit: Wh
+
+- id: bff839d7-2583-4be9-a19f-45fc56eed7f0
+  short_name: DCA1
+  long_name: DC Current String 1
+  description: DC Current String 1
+  address: 3053
+  function_code: 0x04
+  format: INT32
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 0.01
+  unit: A
+
+- id: 0054e8ab-a330-401c-b368-5eddb56507d6
+  short_name: DCA2
+  long_name: DC Current String 2
+  description: DC Current String 2
+  address: 3055
+  function_code: 0x04
+  format: INT32
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 0.01
+  unit: A
+
+- id: 3e3fa6a5-2502-4317-b733-24397af51447
+  short_name: DCA3
+  long_name: DC Current String 3
+  description: DC Current String 3
+  address: 3057
+  function_code: 0x04
+  format: INT32
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 0.01
+  unit: A
+
+- id: dd539550-4d6e-41c4-b4d0-42c0757666b2
+  short_name: DCA4
+  long_name: DC Current String 4
+  description: DC Current String 4
+  address: 3059
+  function_code: 0x04
+  format: INT32
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 0.01
+  unit: A
+
+- id: fbecb30e-d4af-48b3-9d92-e3c31e34f815
+  short_name: DCA5
+  long_name: DC Current String 5
+  description: DC Current String 5
+  address: 3061
+  function_code: 0x04
+  format: INT32
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 0.01
+  unit: A
+
+- id: a49fd762-23e2-4d7e-93e3-f1cfc2822c6b
+  short_name: DCA6
+  long_name: DC Current String 6
+  description: DC Current String 6
+  address: 3063
+  function_code: 0x04
+  format: INT32
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 0.01
+  unit: A
+
+- id: 34578cdd-c470-48d5-a510-e0851d970afa
+  short_name: DCA7
+  long_name: DC Current String 7
+  description: DC Current String 7
+  address: 3065
+  function_code: 0x04
+  format: INT32
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 0.01
+  unit: A
+
+- id: 9482ab38-5d1d-4e28-a828-f1a61d356963
+  short_name: DCA8
+  long_name: DC Current String 8
+  description: DC Current String 8
+  address: 3067
+  function_code: 0x04
+  format: INT32
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 0.01
+  unit: A
+
+- id: cc02d28c-c028-40cf-911d-539bc873ddab
+  short_name: DCA9
+  long_name: DC Current String 9
+  description: DC Current String 9
+  address: 3069
+  function_code: 0x04
+  format: INT32
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 0.01
+  unit: A
+
+- id: 8df190a7-6c9b-41c1-b174-199fd6ab1876
+  short_name: DCA10
+  long_name: DC Current String 10
+  description: DC Current String 10
+  address: 3071
+  function_code: 0x04
+  format: INT32
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 0.01
+  unit: A
+
+- id: 488444bc-d4d9-41c5-8c60-97b9f4c310ac
+  short_name: DCA11
+  long_name: DC Current String 11
+  description: DC Current String 11
+  address: 3073
+  function_code: 0x04
+  format: INT32
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 0.01
+  unit: A
+
+- id: 8c47aac4-1eb8-4512-a530-d6d24a5252f0
+  short_name: DCA12
+  long_name: DC Current String 12
+  description: DC Current String 12
+  address: 3075
+  function_code: 0x04
+  format: INT32
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 0.01
+  unit: A
+
+- id: 305cb954-5436-43db-96a3-affde083e4a7
+  short_name: DCA13
+  long_name: DC Current String 13
+  description: DC Current String 13
+  address: 3077
+  function_code: 0x04
+  format: INT32
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 0.01
+  unit: A
+
+- id: 6adad9ea-3bd1-4a6c-832d-cfa8bfc36cb2
+  short_name: DCA14
+  long_name: DC Current String 14
+  description: DC Current String 14
+  address: 3079
+  function_code: 0x04
+  format: INT32
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 0.01
+  unit: A
+
+- id: b301b4da-7334-4ca0-99bf-5e9549ecad82
+  short_name: DCA15
+  long_name: DC Current String 15
+  description: DC Current String 15
+  address: 3081
+  function_code: 0x04
+  format: INT32
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 0.01
+  unit: A
+
+- id: e230d456-9f95-4f86-8b1d-6acf80677d96
+  short_name: DCA16
+  long_name: DC Current String 16
+  description: DC Current String 16
+  address: 3083
+  function_code: 0x04
+  format: INT32
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 0.01
+  unit: A
+
+- id: 50d853f1-2cd7-4b93-a077-55e4833ce2dd
+  short_name: DCVMPPT1
+  long_name: DC Voltage MPPT 1
+  description: DC Voltage MPPT 1
+  address: 3085
+  function_code: 0x04
+  format: INT32
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 0.1
+  unit: V
+
+
+- id: f90096b0-35e3-454f-b674-92e584bc10c5
+  short_name: DCVMPPT2
+  long_name: DC Voltage MPPT 2
+  description: DC Voltage MPPT 2
+  address: 3087
+  function_code: 0x04
+  format: INT32
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 0.1
+  unit: V
+
+- id: 720f68e5-c4a7-457c-a87e-41054981e8eb
+  short_name: DCVMPPT3
+  long_name: DC Voltage MPPT 3
+  description: DC Voltage MPPT 3
+  address: 3089
+  function_code: 0x04
+  format: INT32
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 0.1
+  unit: V
+
+- id: e2c565f6-f7e6-4184-810f-e7b3b9766ceb
+  short_name: DCVMPPT4
+  long_name: DC Voltage MPPT 4
+  description: DC Voltage MPPT 4
+  address: 3091
+  function_code: 0x04
+  format: INT32
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 0.1
+  unit: V
+
+- id: 3c8ec93a-fa9e-40e4-957d-5705208a0449
+  short_name: DCVMPPT5
+  long_name: DC Voltage MPPT 5
+  description: DC Voltage MPPT 5
+  address: 3093
+  function_code: 0x04
+  format: INT32
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 0.1
+  unit: V
+
+- id: 61c860a1-eb8c-469d-a7e2-8118a4f66d5a
+  short_name: DCVMPPT6
+  long_name: DC Voltage MPPT 6
+  description: DC Voltage MPPT 6
+  address: 3095
+  function_code: 0x04
+  format: INT32
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 0.1
+  unit: V
+
+- id: 0e000636-6fd6-401b-8b75-2b68d751e971
+  short_name: DCVMPPT7
+  long_name: DC Voltage MPPT 7
+  description: DC Voltage MPPT 7
+  address: 3097
+  function_code: 0x04
+  format: INT32
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 0.1
+  unit: V
+
+- id: 2720035f-8643-42ec-8511-2c6bbcc8ebde
+  short_name: DCVMPPT8
+  long_name: DC Voltage MPPT 8
+  description: DC Voltage MPPT 8
+  address: 3099
+  function_code: 0x04
+  format: INT32
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 0.1
+  unit: V
+  
+- id: ad17c5df-198d-44d3-b4c0-be58beb064d4
+  short_name: DCWMPPT1
+  long_name: DC Power MPPT 1
+  description: DC Power MPPT 1
+  address: 3101
+  function_code: 0x04
+  format: INT32
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1
+  unit: W
+
+- id: 32dc423d-8fb3-42ce-a64b-d02ed4cd885e
+  short_name: DCWMPPT2
+  long_name: DC Power MPPT 2
+  description: DC Power MPPT 2
+  address: 3103
+  function_code: 0x04
+  format: INT32
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1
+  unit: W
+
+- id: a4101257-5196-4891-b985-0675439722b3
+  short_name: DCWMPPT3
+  long_name: DC Power MPPT 3
+  description: DC Power MPPT 3
+  address: 3105
+  function_code: 0x04
+  format: INT32
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1
+  unit: W
+
+- id: bf908ae2-2762-4175-9e97-5173052658a1
+  short_name: DCWMPPT4
+  long_name: DC Power MPPT 4
+  description: DC Power MPPT 4
+  address: 3107
+  function_code: 0x04
+  format: INT32
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1
+  unit: W
+
+- id: d1b62bd2-6604-4130-9d61-2a84c60a344e
+  short_name: DCWMPPT5
+  long_name: DC Power MPPT 5
+  description: DC Power MPPT 5
+  address: 3109
+  function_code: 0x04
+  format: INT32
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1
+  unit: W
+
+- id: 97642a62-1e30-45cd-b4db-4c81d40eba25
+  short_name: DCWMPPT6
+  long_name: DC Power MPPT 6
+  description: DC Power MPPT 6
+  address: 3111
+  function_code: 0x04
+  format: INT32
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1
+  unit: W
+
+- id: 87e9e479-ad9e-485a-8835-be439b4c54cc
+  short_name: DCWMPPT7
+  long_name: DC Power MPPT 7
+  description: DC Power MPPT 7
+  address: 3113
+  function_code: 0x04
+  format: INT32
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1
+  unit: W
+
+- id: ace4b7ed-38fb-4312-a42a-aef63072f655
+  short_name: DCWMPPT8
+  long_name: DC Power MPPT 8
+  description: DC Power MPPT 8
+  address: 3115
+  function_code: 0x04
+  format: INT32
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1
+  unit: W

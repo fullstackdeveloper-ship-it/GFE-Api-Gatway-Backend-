@@ -20,8 +20,13 @@ const config = {
   SOCKET_CORS_ORIGINS: process.env.SOCKET_CORS_ORIGINS || '*',
   SOCKET_ASYNC_MODE: 'threading',
   
-  // Database Configuration (if needed later)
+  // Database Configuration
   DATABASE_URL: process.env.DATABASE_URL || null,
+  DB_PATH: process.env.DB_PATH || './data/sqlite/power_flow.db',
+  GLOBAL_DB_PATH: process.env.GLOBAL_DB_PATH || '/home/gfe/Desktop/Project/Green_Project/data/sqlite/power_flow.db',
+  
+  // Blueprint Configuration
+  BLUEPRINT_PATH: process.env.BLUEPRINT_PATH || './gfe-iot/blueprints',
   
   // Logging Configuration
   LOG_LEVEL: process.env.LOG_LEVEL || 'info',

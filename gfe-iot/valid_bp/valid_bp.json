@@ -1,0 +1,18 @@
+{
+    "batch_id": "2212915821",
+    "data": [
+        {
+            "power_meter": {
+                "device_vendor": "GFE",
+                "protocol": "modbus_tcp",
+                "reference": "EMPro"
+            },
+            "solar_inverter": {
+                "device_vendor": "GFE",
+                "protocol": "modbus_tcp",
+                "reference": "GFE-100KTL"
+            }
+        }
+    ],
+    "time_stamp": "2025-09-01 13:26:08"
+}

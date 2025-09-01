@@ -3,12 +3,16 @@ const path = require('path');
 const fs = require('fs').promises;
 const { readYaml, writeYaml } = require('../../utils/yamlManager');
 const { validateDeviceSchema } = require('../middleware/validateDevice');
+const DeviceTableService = require('../../services/deviceTableService');
 
 const router = express.Router();
 
 const DEVICE_LIST_PATH = process.env.DEVICE_LIST_PATH;
 const BLUEPRINTS_DIR = process.env.BLUEPRINTS_DIR;
 const REFERENCE_CATALOG_PATH = process.env.REFERENCE_CATALOG_PATH || null;
+
+// Initialize device table service
+const deviceTableService = new DeviceTableService();
 
 
 async function getReferencesFromCatalog() {
@@ -136,11 +140,23 @@ router.post('/', async (req, res) => {
     const exists = data.devices_list.find(d => d.device_name === req.body.device_name);
     if (exists) return res.status(400).json({ error: `Device "${req.body.device_name}" already exists.` });
 
+    // Create device table in database
+    try {
+      await deviceTableService.createDeviceTable(req.body.device_name, req.body.reference);
+      console.log(`✅ Device table created for ${req.body.device_name}`);
+    } catch (tableError) {
+      console.error(`❌ Failed to create device table for ${req.body.device_name}:`, tableError.message);
+      return res.status(500).json({ 
+        error: 'Device added but failed to create database table', 
+        details: tableError.message 
+      });
+    }
+
     data.devices_list.push(req.body);
     await writeYaml(DEVICE_LIST_PATH, data, { spacing: 2 });
 
     res.status(201).json({
-      message: `Device "${req.body.device_name}" added successfully.`,
+      message: `Device "${req.body.device_name}" added successfully with database table.`,
       device_name: req.body.device_name,
       success: true
     });
@@ -183,6 +199,19 @@ router.put('/:deviceName', async (req, res) => {
     const { error } = validateDeviceSchema(updatedDevice, data.devices_list);
     if (error) return res.status(400).json({ error: error.message });
 
+    // Handle device table updates if device name changed
+    if (originalDevice.device_name !== newDeviceName) {
+      try {
+        // Delete old table and create new one with new name
+        await deviceTableService.deleteDeviceTable(originalDevice.device_name);
+        await deviceTableService.createDeviceTable(newDeviceName, updatedDevice.reference);
+        console.log(`✅ Device table updated for ${originalDevice.device_name} → ${newDeviceName}`);
+      } catch (tableError) {
+        console.error(`❌ Failed to update device table for ${originalDevice.device_name}:`, tableError.message);
+        // Continue with device update even if table update fails
+      }
+    }
+
     // ✅ Apply update
     data.devices_list[index] = updatedDevice;
     await writeYaml(DEVICE_LIST_PATH, data, { spacing: 2 });
@@ -206,6 +235,15 @@ router.delete('/:deviceName', async (req, res) => {
 
     if (filtered.length === data.devices_list.length) {
       return res.status(404).json({ error: `Device "${req.params.deviceName}" not found.` });
+    }
+
+    // Delete device table from database
+    try {
+      await deviceTableService.deleteDeviceTable(req.params.deviceName);
+      console.log(`✅ Device table deleted for ${req.params.deviceName}`);
+    } catch (tableError) {
+      console.error(`❌ Failed to delete device table for ${req.params.deviceName}:`, tableError.message);
+      // Continue with device deletion even if table deletion fails
     }
 
     data.devices_list = filtered;
@@ -241,6 +279,27 @@ router.get('/blueprint/:reference', async (req, res) => {
   } catch (err) {
     console.error('Blueprint search error:', err.message);
     res.status(500).json({ error: 'Failed to search blueprints', details: err.message });
+  }
+});
+
+// --- GET device table info ---
+router.get('/:deviceName/table', async (req, res) => {
+  try {
+    const deviceName = req.params.deviceName;
+    const tableName = await deviceTableService.getDeviceTableName(deviceName);
+    
+    if (!tableName) {
+      return res.status(404).json({ error: `No table found for device: ${deviceName}` });
+    }
+
+    res.json({
+      success: true,
+      device_name: deviceName,
+      table_name: tableName,
+      message: `Table found for device ${deviceName}`
+    });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to get device table info.', details: err.message });
   }
 });
 

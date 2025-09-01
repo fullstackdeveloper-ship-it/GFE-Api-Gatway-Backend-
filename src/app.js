@@ -705,6 +705,8 @@ function handleSensorData(data) {
     // Use the continuous streaming method for real-time updates
     socketManager.handleContinuousSensorStream(data);
 
+
+
     // You can add more processing here (database storage, analytics, etc.)
   } catch (error) {
     console.error(`Error processing sensor data: ${error}`);
@@ -724,6 +726,8 @@ async function initPowerFlowSocketService() {
   }
 }
 
+
+
 // Start the server
 async function startServer() {
   try {
@@ -740,6 +744,8 @@ async function startServer() {
 
     // Initialize Power Flow Socket Service
     await initPowerFlowSocketService();
+
+
 
     // Start the server
     server.listen(config.PORT, config.HOST, () => {

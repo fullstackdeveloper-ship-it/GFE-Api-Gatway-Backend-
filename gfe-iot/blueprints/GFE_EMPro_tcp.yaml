@@ -1,0 +1,329 @@
+header:
+  device_type: power_meter
+  device_vendor: GFE
+  reference: EMPro
+  protocol: modbus_tcp
+  byte_order: big
+  word_order: little
+
+registers:
+- id: 249a0b0f-fe83-4bbf-bcf3-cc7ceb1c1929
+  short_name: W
+  long_name: W
+  description: W
+  address: 0
+  function_code: 0x03
+  format: INT32
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1
+  unit: W
+
+- id: b89c24c8-83cd-4537-a57a-e2f0a89faa6a
+  short_name: WphA
+  long_name: Active Power Phase A
+  description: Active Power Phase A
+  address: 2
+  function_code: 0x03
+  format: INT32
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1
+  unit: W
+
+- id: 314055b4-70eb-4f47-a133-be7ffde7eea0
+  short_name: WphB
+  long_name: Active Power Phase B
+  description: Active Power Phase B
+  address: 4
+  function_code: 0x03
+  format: INT32
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1
+  unit: W
+
+- id: 34ce5394-093c-4268-95f8-466c6a07c47b
+  short_name: WphC
+  long_name: Active Power Phase C
+  description: Active Power Phase C
+  address: 6
+  function_code: 0x03
+  format: INT32
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1
+  unit: W
+
+- id: c3c6289c-20a6-427b-98be-90450b27a5d0
+  short_name: VAR
+  long_name: Total Reactive Power
+  description: Total Reactive Power
+  address: 8
+  function_code: 0x03
+  format: INT32
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1
+  unit: VAR
+
+- id: 04273b40-431f-4755-a733-afc92d33a9df
+  short_name: VARphA
+  long_name: Reactive Power Phase A
+  description: Reactive Power Phase A
+  address: 10
+  function_code: 0x03
+  format: INT32
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1
+  unit: VAR
+  
+- id: 90a98e49-101f-4963-bffa-fde7c4ec9740
+  short_name: VARphB
+  long_name: Reactive Power Phase B
+  description: Reactive Power Phase B
+  address: 12
+  function_code: 0x03
+  format: INT32
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1
+  unit: VAR
+
+- id: c1d9b17c-07cd-476e-b362-ee26b89e79c0
+  short_name: VARphC
+  long_name: Reactive Power Phase C
+  description: Reactive Power Phase C
+  address: 14
+  function_code: 0x03
+  format: INT32
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1
+  unit: VAR
+
+- id: 4a6a5590-1df1-4a10-b3d3-85fb8c01c918
+  short_name: VA
+  long_name: Total Apparent Power
+  description: Total Apparent Power
+  address: 16
+  function_code: 0x03
+  format: INT32
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1
+  unit: VA
+
+- id: 5667de7b-a624-439b-b358-0ab756cd22fb
+  short_name: VAphA
+  long_name: Apparent Power Phase A
+  description: Apparent Power Phase A
+  address: 18
+  function_code: 0x03
+  format: INT32
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1
+  unit: VA
+
+- id: f0819e95-a9f7-4921-a221-e8dc0c75036d
+  short_name: VAphB
+  long_name: Apparent Power Phase B
+  description: Apparent Power Phase B
+  address: 20
+  function_code: 0x03
+  format: INT32
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1
+  unit: VA
+
+- id: 0d13af68-052b-49e8-8d83-06dbcba34731
+  short_name: VAphC
+  long_name: Apparent Power Phase C
+  description: Apparent Power Phase C (VA)
+  address: 22
+  function_code: 0x03
+  format: INT32
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1
+  unit: VA
+
+- id: c31173f2-e81d-498b-a5cc-4ba9a9acf762
+  short_name: Hz
+  long_name: Frequency
+  description: Frequency
+  address: 24
+  function_code: 0x03
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 0.01
+  unit: Hz
+
+- id: e88de0bd-1dd3-4ee1-a020-3c38c9aea23a
+  short_name: PF
+  long_name: Power Factor
+  description: Power Factor
+  address: 25
+  function_code: 0x03
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 0.01
+
+- id: d91a9eb4-3c1d-4492-8182-050ca42b99af
+  short_name: PFphA
+  long_name: Power Factor Phase A
+  description: Power Factor Phase A
+  address: 26
+  function_code: 0x03
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 0.01
+
+- id: 3c02fc34-9c-4e02-924d-46f78c4bf8fd
+  short_name: PFphB
+  long_name: Power Factor Phase B
+  description: Power Factor Phase B (nan)
+  address: 27
+  function_code: 0x03
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 0.01
+
+- id: 476d1f37-3a4b-49ae-9015-fe81bdfb12aa
+  short_name: PFphC
+  long_name: Power Factor Phase C
+  description: Power Factor Phase C
+  address: 28
+  function_code: 0x03
+  format: UINT16
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 0.01
+
+- id: 8dd1e0eb-7ae3-461b-a64e-f5985b2d8276
+  short_name: PhVphA
+  long_name: Voltage Phase A
+  description: Voltage Phase A
+  address: 29
+  function_code: 0x03
+  format: INT32
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 0.1
+  unit: V
+
+- id: 43d5ab29-003d-4250-aaba-846a932b05aa
+  short_name: PhVphB
+  long_name: Voltage Phase B
+  description: Voltage Phase B
+  address: 31
+  function_code: 0x03
+  format: INT32
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 0.1
+  unit: V
+
+- id: 2dcb52b8-02c7-4361-b27b-a4b8deef711d
+  short_name: PhVphC
+  long_name: Voltage Phase C
+  description: Voltage Phase C
+  address: 33
+  function_code: 0x03
+  format: INT32
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 0.1
+  unit: V
+
+- id: 5ba3e688-546b-41b8-a6c6-e29131ed2ead
+  short_name: PPVphAB
+  long_name: Voltage Phase AB
+  description: Voltage Phase AB
+  address: 35
+  function_code: 0x03
+  format: INT32
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 0.1
+  unit: V
+
+- id: 12521627-8719-4ed4-8ce7-159ee672a1ee
+  short_name: PPVphBC
+  long_name: Voltage Phase BC
+  description: Voltage Phase BC
+  address: 37
+  function_code: 0x03
+  format: INT32
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 0.1
+  unit: V
+
+- id: 19401d42-42e3-4cc8-b862-7a73aab2a07c
+  short_name: PPVphCA
+  long_name: Voltage Phase CA
+  description: Voltage Phase CA
+  address: 39
+  function_code: 0x03
+  format: INT32
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 0.1
+  unit: V
+
+- id: 0d10f8be-1484-4d69-a4e9-58942bf5b240
+  short_name: WHPos
+  long_name: Total Positve Energy
+  description: Total Positve Energy
+  address: 41
+  function_code: 0x03
+  format: INT32
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1
+  unit: Wh
+
+- id: 80dfe7ce-53-4efd-ba60-605f32c84f0d
+  short_name: WHNeg
+  long_name: Total Negative Energy
+  description: Total Negative Energy
+  address: 45
+  function_code: 0x03
+  format: INT32
+  channel_access: RO
+  channel_type: timeseries
+  aggregation_method: average
+  scale: 1
+  unit: Wh
