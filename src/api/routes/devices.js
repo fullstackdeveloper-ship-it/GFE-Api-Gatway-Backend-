@@ -1,9 +1,9 @@
 const express = require('express');
-const path = require('path');
-const fs = require('fs').promises;
-const { readYaml, writeYaml } = require('../../utils/yamlManager');
-const { validateDeviceSchema } = require('../middleware/validateDevice');
 const DeviceTableService = require('../../services/deviceTableService');
+const { validateDeviceSchema } = require('../middleware/validateDevice');
+const yaml = require('js-yaml');
+const fs = require('fs');
+const path = require('path');
 
 const router = express.Router();
 
@@ -61,22 +61,190 @@ async function getReferencesFromCatalog() {
   }
 }
 
+// --- GET power meter devices from database ---
+router.get('/power-meters', async (req, res) => {
+  try {
+    // Query device_tables for power meter devices - only return device names
+    const query = `SELECT device_name FROM device_tables WHERE device_type = 'power_meter'`;
+    
+    deviceTableService.db.all(query, (err, rows) => {
+      if (err) {
+        console.error('❌ Database error:', err);
+        res.status(500).json({ error: 'Database error', details: err.message });
+        return;
+      }
+      
+      // Extract just the device names
+      const deviceNames = rows ? rows.map(row => row.device_name) : [];
+      
+      res.json({
+        success: true,
+        data: deviceNames
+      });
+    });
+    
+  } catch (err) {
+    console.error('Power meter devices error:', err.message);
+    res.status(500).json({ error: 'Failed to load power meter devices', details: err.message });
+  }
+});
 
+router.get('/:deviceName/active-power', async (req, res) => {
+  try {
+    const { deviceName } = req.params;
+    const hours = parseInt(req.query.hours) || 24; // Default to 24 hours
+
+    // 1) Look up the registered table for this device
+    const tableQuery = `SELECT table_name FROM device_tables WHERE device_name = ?`;
+    deviceTableService.db.get(tableQuery, [deviceName], (metaErr, deviceRow) => {
+      if (metaErr) {
+        console.error('❌ [active-power] Metadata DB error:', metaErr);
+        return res.status(500).json({ error: 'Database error (metadata lookup)', details: metaErr.message });
+      }
+
+      if (!deviceRow) {
+        const msg = `Device "${deviceName}" not found in device_tables.`;
+        console.error('❌ [active-power]', msg);
+        return res.status(404).json({ error: msg });
+      }
+
+      const tableName = deviceRow.table_name;
+      console.log(`🔍 [active-power] Registered table for ${deviceName}: ${tableName}`);
+
+      // 2) Verify the physical table exists
+      const existsQuery = `SELECT name FROM sqlite_master WHERE type='table' AND name = ?`;
+      deviceTableService.db.get(existsQuery, [tableName], (existsErr, existsRow) => {
+        if (existsErr) {
+          console.error('❌ [active-power] Error checking table existence:', existsErr);
+          return res.status(500).json({ error: 'Database error (existence check)', details: existsErr.message });
+        }
+
+        if (!existsRow) {
+          const msg = `Table "${tableName}" for device "${deviceName}" is missing in the database.`;
+          console.error('❌ [active-power]', msg);
+          return res.status(500).json({ error: msg });
+        }
+
+        // 3) Fetch data with time filter (last N hours)
+        const quotedTable = `"${String(tableName).replace(/"/g, '""')}"`;
+        
+        // Calculate the cutoff timestamp (N hours ago in milliseconds)
+        const now = Date.now();
+        const cutoffTime = now - (hours * 60 * 60 * 1000); // Convert hours to milliseconds
+        
+        const dataQuery = `
+          SELECT
+            timestamp,
+            W, WphA, WphB, WphC
+          FROM ${quotedTable}
+          WHERE timestamp >= ${cutoffTime}
+          ORDER BY timestamp ASC
+        `;
+
+        deviceTableService.db.all(dataQuery, (dataErr, dataRows) => {
+          if (dataErr) {
+            console.error('❌ [active-power] Data fetch error:', dataErr);
+            return res.status(500).json({ error: 'Failed to fetch data', details: dataErr.message });
+          }
+
+          console.log(`✅ [active-power] Fetched ${dataRows ? dataRows.length : 0} rows from ${tableName} (last ${hours} hours, cutoff: ${new Date(cutoffTime).toISOString()})`);
+
+          // Format the data with proper timestamp handling
+          const formattedData = (dataRows || []).map(row => {
+            // Convert Unix timestamp (milliseconds) to simple time format (HH:MM)
+            let formattedTime = row.timestamp;
+            
+            if (typeof row.timestamp === 'number') {
+              const date = new Date(row.timestamp);
+              formattedTime = date.toLocaleTimeString('en-US', {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false
+              });
+            } else if (typeof row.timestamp === 'string') {
+              // If it's a string, try to parse it as a number first
+              const timestampNum = parseInt(row.timestamp);
+              if (!isNaN(timestampNum)) {
+                const date = new Date(timestampNum);
+                formattedTime = date.toLocaleTimeString('en-US', {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  hour12: false
+                });
+              } else {
+                // Keep original if it's not a number
+                formattedTime = row.timestamp;
+              }
+            }
+
+            return {
+              time: formattedTime,
+              timestamp: row.timestamp, // Keep original for debugging
+              W: parseFloat(row.W) || 0,
+              WphA: parseFloat(row.WphA) || 0,
+              WphB: parseFloat(row.WphB) || 0,
+              WphC: parseFloat(row.WphC) || 0
+            };
+          });
+
+          return res.json({
+            success: true,
+            device_name: deviceName,
+            table_name: tableName,
+            time_filter: `Last ${hours} hours`,
+            data_count: formattedData.length,
+            cutoff_timestamp: cutoffTime,
+            cutoff_time: new Date(cutoffTime).toISOString(),
+            data: formattedData
+          });
+        });
+      });
+    });
+
+  } catch (err) {
+    console.error(`❌ [active-power] Unexpected error for ${req.params.deviceName}:`, err.message);
+    res.status(500).json({ error: 'Failed to fetch active power data', details: err.message });
+  }
+});
+
+// --- DEBUG: Check device_tables content ---
+router.get('/debug/device-tables', (req, res) => {
+  try {
+    const query = `SELECT * FROM device_tables`;
+    
+    deviceTableService.db.all(query, (err, rows) => {
+      if (err) {
+        console.error('❌ Database error:', err);
+        res.status(500).json({ error: 'Database error', details: err.message });
+        return;
+      }
+      
+      res.json({
+        success: true,
+        count: rows ? rows.length : 0,
+        devices: rows || []
+      });
+    });
+    
+  } catch (err) {
+    res.status(500).json({ error: 'Debug error', details: err.message });
+  }
+});
 
 // --- GET all devices grouped by interface + blueprint references ---
 router.get('/', async (req, res) => {
   try {
-    const data = await readYaml(DEVICE_LIST_PATH);
+    const data = yaml.load(fs.readFileSync(DEVICE_LIST_PATH, 'utf8'));
     const devices = data.devices_list || [];
 
     // Load all blueprints once
     let referenceMap = {};
     try {
-      const files = await fs.readdir(BLUEPRINTS_DIR);
+      const files = await fs.promises.readdir(BLUEPRINTS_DIR);
       const yamlFiles = files.filter(f => f.endsWith('.yaml'));
 
       for (const file of yamlFiles) {
-        const blueprint = await readYaml(path.join(BLUEPRINTS_DIR, file));
+        const blueprint = yaml.load(fs.readFileSync(path.join(BLUEPRINTS_DIR, file)));
         const ref = blueprint?.header?.reference;
         const type = blueprint?.header?.device_type;
         if (ref && type) {
@@ -121,7 +289,7 @@ router.get('/', async (req, res) => {
 // --- GET devices by interface ---
 router.get('/:interface', async (req, res) => {
   try {
-    const data = await readYaml(DEVICE_LIST_PATH);
+    const data = yaml.load(fs.readFileSync(DEVICE_LIST_PATH, 'utf8'));
     const filtered = data.devices_list.filter(d => d.interface === req.params.interface);
     res.json({ devices: filtered });
   } catch (err) {
@@ -132,7 +300,7 @@ router.get('/:interface', async (req, res) => {
 // --- POST add device ---
 router.post('/', async (req, res) => {
   try {
-    const data = await readYaml(DEVICE_LIST_PATH);
+    const data = yaml.load(fs.readFileSync(DEVICE_LIST_PATH, 'utf8'));
 
     const { error } = validateDeviceSchema(req.body, data.devices_list);
     if (error) return res.status(400).json({ error: error.message });
@@ -153,7 +321,7 @@ router.post('/', async (req, res) => {
     }
 
     data.devices_list.push(req.body);
-    await writeYaml(DEVICE_LIST_PATH, data, { spacing: 2 });
+    fs.writeFileSync(DEVICE_LIST_PATH, yaml.dump(data, { spacing: 2 }));
 
     res.status(201).json({
       message: `Device "${req.body.device_name}" added successfully with database table.`,
@@ -168,7 +336,7 @@ router.post('/', async (req, res) => {
 // --- PUT update device ---
 router.put('/:deviceName', async (req, res) => {
   try {
-    const data = await readYaml(DEVICE_LIST_PATH);
+    const data = yaml.load(fs.readFileSync(DEVICE_LIST_PATH, 'utf8'));
     const index = data.devices_list.findIndex(d => d.device_name === req.params.deviceName);
     if (index === -1) return res.status(404).json({ error: `Device "${req.params.deviceName}" not found.` });
 
@@ -214,7 +382,7 @@ router.put('/:deviceName', async (req, res) => {
 
     // ✅ Apply update
     data.devices_list[index] = updatedDevice;
-    await writeYaml(DEVICE_LIST_PATH, data, { spacing: 2 });
+    fs.writeFileSync(DEVICE_LIST_PATH, yaml.dump(data, { spacing: 2 }));
 
     res.json({
       message: `Device "${req.params.deviceName}" updated successfully.`,
@@ -226,11 +394,10 @@ router.put('/:deviceName', async (req, res) => {
   }
 });
 
-
 // --- DELETE device ---
 router.delete('/:deviceName', async (req, res) => {
   try {
-    const data = await readYaml(DEVICE_LIST_PATH);
+    const data = yaml.load(fs.readFileSync(DEVICE_LIST_PATH, 'utf8'));
     const filtered = data.devices_list.filter(d => d.device_name !== req.params.deviceName);
 
     if (filtered.length === data.devices_list.length) {
@@ -247,7 +414,7 @@ router.delete('/:deviceName', async (req, res) => {
     }
 
     data.devices_list = filtered;
-    await writeYaml(DEVICE_LIST_PATH, data, { spacing: 2 });
+    fs.writeFileSync(DEVICE_LIST_PATH, yaml.dump(data, { spacing: 2 }));
 
     res.json({
       message: `Device "${req.params.deviceName}" deleted successfully.`,
@@ -262,12 +429,12 @@ router.delete('/:deviceName', async (req, res) => {
 // --- GET blueprint by reference ---
 router.get('/blueprint/:reference', async (req, res) => {
   try {
-    const blueprintFiles = await fs.readdir(BLUEPRINTS_DIR);
+    const blueprintFiles = await fs.promises.readdir(BLUEPRINTS_DIR);
     const yamlFiles = blueprintFiles.filter(file => file.endsWith('.yaml'));
 
     for (const file of yamlFiles) {
       const fullPath = path.join(BLUEPRINTS_DIR, file);
-      const blueprint = await readYaml(fullPath);
+      const blueprint = yaml.load(fs.readFileSync(fullPath));
 
       if (blueprint?.header?.reference === req.params.reference) {
         return res.json(blueprint);
