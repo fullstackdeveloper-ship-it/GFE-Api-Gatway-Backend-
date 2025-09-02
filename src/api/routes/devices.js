@@ -2,7 +2,7 @@ const express = require('express');
 const DeviceTableService = require('../../services/deviceTableService');
 const { validateDeviceSchema } = require('../middleware/validateDevice');
 const yaml = require('js-yaml');
-const fs = require('fs');
+const fs = require('fs'); 
 const path = require('path');
 
 const router = express.Router();
@@ -13,6 +13,7 @@ const REFERENCE_CATALOG_PATH = process.env.REFERENCE_CATALOG_PATH || null;
 
 // Initialize device table service
 const deviceTableService = new DeviceTableService();
+const fsp = fs.promises; 
 
 
 async function getReferencesFromCatalog() {
@@ -22,8 +23,11 @@ async function getReferencesFromCatalog() {
   }
 
   try {
-    const raw = await fs.readFile(REFERENCE_CATALOG_PATH, 'utf8');
+  
+    const raw = await fsp.readFile(REFERENCE_CATALOG_PATH, 'utf8');
     const json = JSON.parse(raw);
+
+    console.log('Loaded reference catalog:', json);
 
     // Normalize json.data → always an array of plain objects
     let data = json?.data;
@@ -236,6 +240,7 @@ router.get('/', async (req, res) => {
   try {
     const data = yaml.load(fs.readFileSync(DEVICE_LIST_PATH, 'utf8'));
     const devices = data.devices_list || [];
+    console.log(`Loaded ${devices.length} devices from ${DEVICE_LIST_PATH}`);
 
     // Load all blueprints once
     let referenceMap = {};
