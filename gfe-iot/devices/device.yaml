@@ -9,16 +9,6 @@ devices_list:
     response_timeout: 0.5
     keep_tcp_session_open: false
     concurrent_access: false
-  - device_name: Inv2
-    reference: GFE-100KTL
-    protocol: modbus_tcp
-    interface: eth1
-    device_ip: 192.168.4.110
-    tcp_port: 502
-    device_id: 11
-    response_timeout: 0.5
-    keep_tcp_session_open: false
-    concurrent_access: false
   - device_name: Inv3
     reference: GFE-100KTL
     protocol: modbus_tcp
