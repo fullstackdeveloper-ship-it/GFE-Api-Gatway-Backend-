@@ -174,6 +174,63 @@ class DatabaseService {
     this.db.serialize(callback);
   }
 
+  // Data retention policy - cleanup old data
+  async cleanupOldData(retentionDays = 30) {
+    try {
+      const cutoffDate = new Date();
+      cutoffDate.setDate(cutoffDate.getDate() - retentionDays);
+      
+      // Clean up power flow analysis data
+      const result = await this.run(`
+        DELETE FROM power_flow_analysis 
+        WHERE created_at < ?
+      `, [cutoffDate.toISOString()]);
+      
+      console.log(`🧹 Cleaned up ${result.changes} rows older than ${retentionDays} days`);
+      return { 
+        success: true, 
+        message: `Cleaned up ${result.changes} rows older than ${retentionDays} days`,
+        deletedRows: result.changes
+      };
+    } catch (error) {
+      console.error('❌ Data cleanup failed:', error);
+      return { success: false, error: error.message };
+    }
+  }
+
+  // Get database size information
+  async getDatabaseSize() {
+    try {
+      const stats = await this.all(`
+        SELECT 
+          'page_count' as metric, 
+          page_count as value 
+        FROM pragma_page_count
+        UNION ALL
+        SELECT 'page_size', page_size FROM pragma_page_size
+        UNION ALL
+        SELECT 'freelist_count', freelist_count FROM pragma_freelist_count
+      `);
+      
+      const pageCount = stats.find(s => s.metric === 'page_count')?.value || 0;
+      const pageSize = stats.find(s => s.metric === 'page_size')?.value || 4096;
+      const totalSize = pageCount * pageSize;
+      
+      return {
+        success: true,
+        size: {
+          pages: pageCount,
+          pageSize: pageSize,
+          totalBytes: totalSize,
+          totalMB: Math.round(totalSize / 1024 / 1024)
+        },
+        timestamp: new Date().toISOString()
+      };
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
+  }
+
   async close() {
     return new Promise((resolve) => {
       if (this.db) {

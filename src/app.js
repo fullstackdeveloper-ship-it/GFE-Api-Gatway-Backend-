@@ -113,6 +113,86 @@ app.get('/health', (req, res) => {
   });
 });
 
+// Memory monitoring endpoint
+app.get('/api/memory', (req, res) => {
+  const usage = process.memoryUsage();
+  const uptime = process.uptime();
+  
+  res.json({
+    memory: {
+      rss: Math.round(usage.rss / 1024 / 1024) + ' MB',
+      heapTotal: Math.round(usage.heapTotal / 1024 / 1024) + ' MB',
+      heapUsed: Math.round(usage.heapUsed / 1024 / 1024) + ' MB',
+      external: Math.round(usage.external / 1024 / 1024) + ' MB',
+      arrayBuffers: Math.round(usage.arrayBuffers / 1024 / 1024) + ' MB'
+    },
+    uptime: {
+      seconds: Math.round(uptime),
+      human: Math.round(uptime / 60) + ' minutes'
+    },
+    timestamp: new Date().toISOString()
+  });
+});
+
+// Disk space monitoring endpoint
+app.get('/api/disk', (req, res) => {
+  try {
+    const { execSync } = require('child_process');
+    const output = execSync('df -h /', { encoding: 'utf8' });
+    const lines = output.trim().split('\n');
+    const data = lines[1].split(/\s+/);
+    
+    const totalSpace = data[1];
+    const usedSpace = data[2];
+    const availableSpace = data[3];
+    const usedPercent = parseInt(data[4]);
+    
+    res.json({
+      disk: {
+        total: totalSpace,
+        used: usedSpace,
+        available: availableSpace,
+        usedPercent: usedPercent + '%'
+      },
+      status: usedPercent > 80 ? 'WARNING' : 'OK',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    res.status(500).json({ 
+      error: 'Failed to get disk info',
+      details: error.message 
+    });
+  }
+});
+
+// Database management endpoints
+app.get('/api/db/size', async (req, res) => {
+  try {
+    const result = await databaseService.getDatabaseSize();
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ 
+      success: false, 
+      error: 'Failed to get database size',
+      details: error.message 
+    });
+  }
+});
+
+app.post('/api/db/cleanup', async (req, res) => {
+  try {
+    const retentionDays = req.body.retentionDays || 30;
+    const result = await databaseService.cleanupOldData(retentionDays);
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ 
+      success: false, 
+      error: 'Failed to cleanup database',
+      details: error.message 
+    });
+  }
+});
+
 // Enhanced ping endpoint for connectivity check (uses HTTP instead of ICMP)
 app.get('/api/ping', async (req, res) => {
   try {

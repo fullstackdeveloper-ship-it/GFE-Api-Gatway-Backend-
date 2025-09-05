@@ -7,6 +7,8 @@ class DeviceTableService {
   constructor() {
     this.blueprintPath = process.env.BLUEPRINT_PATH || './gfe-iot/blueprints';
     this.blueprintCache = new Map();
+    this.cacheMaxSize = 100; // Limit cache size to prevent memory leaks
+    this.cacheTTL = 30 * 60 * 1000; // 30 minutes TTL
     
     // Use singleton database service
     this.databaseService = DatabaseService.getInstance();
@@ -22,8 +24,10 @@ class DeviceTableService {
   }
 
   async loadBlueprint(reference) {
-    if (this.blueprintCache.has(reference)) {
-      return this.blueprintCache.get(reference);
+    // Check cache with TTL
+    const cached = this.blueprintCache.get(reference);
+    if (cached && Date.now() - cached.timestamp < this.cacheTTL) {
+      return cached.data;
     }
 
     try {
@@ -39,7 +43,19 @@ class DeviceTableService {
           
           // Check if this blueprint has the matching reference
           if (blueprint && blueprint.header && blueprint.header.reference === reference) {
-            this.blueprintCache.set(reference, blueprint);
+            // Clean cache if too large
+            if (this.blueprintCache.size >= this.cacheMaxSize) {
+              const oldestKey = this.blueprintCache.keys().next().value;
+              this.blueprintCache.delete(oldestKey);
+              console.log(`🧹 Cache cleanup: Removed oldest blueprint: ${oldestKey}`);
+            }
+
+            // Store with timestamp
+            this.blueprintCache.set(reference, {
+              data: blueprint,
+              timestamp: Date.now()
+            });
+            
             console.log(`✅ Loaded blueprint for reference: ${reference} from file: ${file}`);
             return blueprint;
           }

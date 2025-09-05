@@ -1,11 +1,10 @@
-const { connect } = require('nats');
 const SQLiteService = require('./sqliteService');
+const natsClient = require('./nats/natsClient');
 const { processPowerFlowData } = require('../utils/powerFlowUtils');
 
 class PowerFlowSocketService {
   constructor(io) {
     this.io = io;
-    this.natsClient = null;
     this.sqliteService = new SQLiteService();
     this.isConnected = false;
   }
@@ -29,42 +28,34 @@ class PowerFlowSocketService {
 
   async connectToNats() {
     try {
-      const config = {
-        servers: process.env.NATS_URL || 'nats://localhost:4222',
-        timeout: 5000,
-        reconnect: true,
-        maxReconnectAttempts: -1,
-        reconnectTimeWait: 1000
-      };
-
-      // Add authentication if credentials are provided
-      if (process.env.NATS_USER && process.env.NATS_PASSWORD) {
-        config.user = process.env.NATS_USER;
-        config.pass = process.env.NATS_PASSWORD;
+      // Use the existing NATS client singleton instead of creating a new connection
+      if (!natsClient.getConnectionStatus()) {
+        console.log('⏳ NATS client not connected, waiting for connection...');
+        // Wait for the main NATS client to connect
+        let attempts = 0;
+        while (!natsClient.getConnectionStatus() && attempts < 30) {
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          attempts++;
+        }
+        
+        if (!natsClient.getConnectionStatus()) {
+          throw new Error('NATS client connection timeout');
+        }
       }
 
-      this.natsClient = await connect(config);
-      console.log('✅ Connected to NATS for real-time power flow data');
+      console.log('✅ Using existing NATS connection for real-time power flow data');
 
-      // Subscribe to sensor data
-      const subscription = this.natsClient.subscribe('sensor.data', {
-        callback: (err, msg) => {
-          if (err) {
-            console.error('❌ NATS message error:', err);
-            return;
-          }
-          
-          try {
-            const data = JSON.parse(msg.data);
-            this.processPowerFlowData(data);
-          } catch (parseError) {
-            console.error('❌ Error parsing NATS message:', parseError);
-          }
-        }
+      // Subscribe to sensor data using the existing client
+      const subscription = await natsClient.subscribe('sensor.data', (data) => {
+        this.processPowerFlowData(data);
       });
 
-      this.isConnected = true;
-      console.log('✅ Subscribed to sensor.data for real-time updates');
+      if (subscription) {
+        this.isConnected = true;
+        console.log('✅ Subscribed to sensor.data for real-time updates');
+      } else {
+        throw new Error('Failed to subscribe to sensor.data');
+      }
       
     } catch (error) {
       console.error('❌ Failed to connect to NATS:', error);
@@ -183,14 +174,14 @@ class PowerFlowSocketService {
 
   async disconnect() {
     try {
-      if (this.natsClient) {
-        await this.natsClient.drain();
-        this.natsClient.close();
+      // Unsubscribe from NATS using the singleton client
+      if (this.isConnected) {
+        natsClient.unsubscribe('sensor.data');
       }
       
-          if (this.sqliteService) {
-      await this.sqliteService.close();
-    }
+      if (this.sqliteService) {
+        await this.sqliteService.close();
+      }
       
       this.isConnected = false;
       console.log('✅ Power Flow Socket Service disconnected');
