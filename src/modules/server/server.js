@@ -143,34 +143,58 @@ class Server {
     });
 
     // Health check
-    this.app.get('/health', controllers.system.getHealth.bind(controllers.system));
+    this.app.get('/health', (req, res) => {
+      controllers.system.getHealth(req, res);
+    });
 
     // Memory monitoring
-    this.app.get('/api/memory', controllers.system.getMemoryUsage.bind(controllers.system));
+    this.app.get('/api/memory', (req, res) => {
+      controllers.system.getMemoryUsage(req, res);
+    });
 
     // Disk monitoring
-    this.app.get('/api/disk', controllers.system.getDiskUsage.bind(controllers.system));
+    this.app.get('/api/disk', (req, res) => {
+      controllers.system.getDiskUsage(req, res);
+    });
 
     // Database management
-    this.app.get('/api/db/size', controllers.system.getDatabaseSize.bind(controllers.system));
-    this.app.post('/api/db/cleanup', controllers.system.cleanupDatabase.bind(controllers.system));
+    this.app.get('/api/db/size', (req, res) => {
+      controllers.system.getDatabaseSize(req, res);
+    });
+    this.app.post('/api/db/cleanup', (req, res) => {
+      controllers.system.cleanupDatabase(req, res);
+    });
 
     // Enhanced ping endpoint for connectivity check (uses HTTP instead of ICMP)
-    this.app.get('/api/ping', controllers.system.ping.bind(controllers.system));
+    this.app.get('/api/ping', (req, res) => {
+      controllers.system.ping(req, res);
+    });
 
     // Config API endpoints
-    this.app.get('/api/config', controllers.config.getConfig.bind(controllers.config));
-    this.app.put('/api/config', controllers.config.updateConfig.bind(controllers.config));
+    this.app.get('/api/config', (req, res) => {
+      controllers.config.getConfig(req, res);
+    });
+    this.app.put('/api/config', (req, res) => {
+      controllers.config.updateConfig(req, res);
+    });
 
     // Network interfaces API
-    this.app.get('/api/net/ifaces', controllers.network.getInterfaces.bind(controllers.network));
+    this.app.get('/api/net/ifaces', (req, res) => {
+      controllers.network.getInterfaces(req, res);
+    });
 
     // Network connectivity API
-    this.app.get('/api/net/connectivity', controllers.network.getConnectivity.bind(controllers.network));
+    this.app.get('/api/net/connectivity', (req, res) => {
+      controllers.network.getConnectivity(req, res);
+    });
 
     // Serial ports API
-    this.app.get('/api/serial/ports', controllers.serial.getSerialPorts.bind(controllers.serial));
-    this.app.get('/api/serial/supported', controllers.serial.getSupportedValues.bind(controllers.serial));
+    this.app.get('/api/serial/ports', (req, res) => {
+      controllers.serial.getSerialPorts(req, res);
+    });
+    this.app.get('/api/serial/supported', (req, res) => {
+      controllers.serial.getSupportedValues(req, res);
+    });
 
     // API routes
     this.app.use('/api/auth', routes.auth);
@@ -178,8 +202,10 @@ class Server {
     this.app.use('/api/connectivity', routes.connectivity);
     this.app.use('/api/parameters', routes.parameters);
     this.app.use('/api/power-flow', routes.powerFlow);
+    this.app.use('/api/serial', routes.serial);
+    this.app.use('/api/serial-ports', routes.serial);
 
-    console.log('📡 API Routes registered: /api/auth, /api/devices, /api/connectivity, /api/parameters, /api/power-flow, /api/ping, /api/config, /api/net/ifaces, /api/net/connectivity, /api/serial/ports');
+    console.log('📡 API Routes registered: /api/auth, /api/devices, /api/connectivity, /api/parameters, /api/power-flow, /api/serial, /api/serial-ports, /api/ping, /api/config, /api/net/ifaces, /api/net/connectivity');
   }
 
   setupErrorHandling() {

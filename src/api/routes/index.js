@@ -4,5 +4,6 @@ module.exports = {
   connectivity: require('./connectivity'),
   devices: require('./devices'),
   parameters: require('./parameters'),
-  powerFlow: require('./powerFlow')
+  powerFlow: require('./powerFlow'),
+  serial: require('./serial')
 };
