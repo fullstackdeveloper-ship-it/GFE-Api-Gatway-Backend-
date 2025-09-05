@@ -39,24 +39,14 @@ devices_list:
     response_timeout: 0.5
     keep_tcp_session_open: false
     concurrent_access: false
-  - device_name: dasdasd
+  - device_name: dasdsa
     reference: EMPro
     protocol: modbus_tcp
     interface: eth1
-    device_id: 112
+    device_id: 22
     response_timeout: 0.5
-    device_ip: 192.168.1.111
-    tcp_port: 502
-    keep_tcp_session_open: true
-    concurrent_access: true
-  - device_name: dasdasdasd
-    reference: EMPro
-    protocol: modbus_tcp
-    interface: eth1
-    device_id: 2
-    response_timeout: 0.5
-    role: generator_power_meter
-    device_ip: 192.168.2.33
+    role: grid_power_meter
+    device_ip: 192.168.3.12
     tcp_port: 502
     keep_tcp_session_open: true
     concurrent_access: true

@@ -1,7 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const authService = require('../../services/authService');
-const { authenticateToken } = require('../../middleware/authMiddleware');
+const AuthController = require('../../modules/controllers/auth/authController');
+const { authenticateToken } = require('../../modules/middleware/authMiddleware');
+
+// Initialize auth controller
+const authController = new AuthController();
 
 /**
  * Login endpoint
@@ -12,28 +15,11 @@ router.post('/login', async (req, res) => {
   
   try {
     const { password } = req.body;
-
-    if (!password) {
-      console.log(`❌ [${new Date().toISOString()}] Login failed - No password provided`);
-      return res.status(400).json({
-        success: false,
-        error: 'Password is required'
-      });
-    }
-
-    const result = await authService.login(password);
-    
-    if (result.success) {
-      console.log(`✅ [${new Date().toISOString()}] Login successful - Token generated`);
-      return res.status(200).json(result);
-    } else {
-      console.log(`❌ [${new Date().toISOString()}] Login failed - ${result.message}`);
-      return res.status(401).json(result);
-    }
-
+    const result = await authController.login(password);
+    res.status(result.status).json(result);
   } catch (error) {
     console.error(`❌ [${new Date().toISOString()}] Login error:`, error);
-    return res.status(500).json({
+    res.status(500).json({
       success: false,
       error: 'Internal server error during login'
     });
@@ -45,12 +31,8 @@ router.post('/login', async (req, res) => {
  * GET /api/auth/verify
  */
 router.get('/verify', authenticateToken, (req, res) => {
-  console.log(`✅ [${new Date().toISOString()}] Token verification successful`);
-  return res.status(200).json({
-    success: true,
-    message: 'Token is valid',
-    user: req.user
-  });
+  const result = authController.verifyToken(req, res);
+  res.status(result.status).json(result);
 });
 
 /**
@@ -62,28 +44,11 @@ router.post('/change-password', authenticateToken, async (req, res) => {
   
   try {
     const { newPassword } = req.body;
-
-    if (!newPassword) {
-      console.log(`❌ [${new Date().toISOString()}] Password change failed - Missing new password`);
-      return res.status(400).json({
-        success: false,
-        error: 'New password is required'
-      });
-    }
-
-    const result = await authService.changePassword(newPassword);
-    
-    if (result.success) {
-      console.log(`✅ [${new Date().toISOString()}] Password changed successfully`);
-      return res.status(200).json(result);
-    } else {
-      console.log(`❌ [${new Date().toISOString()}] Password change failed - ${result.message}`);
-      return res.status(400).json(result);
-    }
-
+    const result = await authController.changePassword(newPassword, req);
+    res.status(result.status).json(result);
   } catch (error) {
     console.error(`❌ [${new Date().toISOString()}] Password change error:`, error);
-    return res.status(500).json({
+    res.status(500).json({
       success: false,
       error: 'Internal server error during password change'
     });
@@ -95,13 +60,8 @@ router.post('/change-password', authenticateToken, async (req, res) => {
  * POST /api/auth/logout
  */
 router.post('/logout', authenticateToken, (req, res) => {
-  console.log(`🚀 [${new Date().toISOString()}] POST /api/auth/logout - Request received`);
-  console.log(`✅ [${new Date().toISOString()}] Logout successful - Token invalidated on client`);
-  
-  return res.status(200).json({
-    success: true,
-    message: 'Logout successful'
-  });
+  const result = authController.logout(req);
+  res.status(result.status).json(result);
 });
 
 module.exports = router;

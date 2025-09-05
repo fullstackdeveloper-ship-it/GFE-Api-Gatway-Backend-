@@ -1,5 +1,5 @@
 require('dotenv').config();
-const natsClient = require('./src/services/nats/natsClient');
+const natsClient = require('./src/modules/services/nats/natsClient');
 
 const rand = (min, max, dp = 0) =>
   Number((Math.random() * (max - min) + min).toFixed(dp));
@@ -43,8 +43,8 @@ const deviceTypes = [
     registerFn: makeSolarRegisters
   },
   {
-    device_type: "power_meter",
-    reference: "POWER-METER-001",
+    device_type: "Inv1",
+    reference: "GFE-100KTL",
     registerFn: makeGridRegisters
   },
   {
@@ -67,7 +67,7 @@ const deviceTypes = [
   setInterval(async () => {
     const deviceBatch = deviceTypes.map((typeDef) => {
       const deviceName =
-        typeDef.device_type + "_" + (1000 + Math.floor(Math.random() * 9000));
+        typeDef.device_type
 
       return {
         deviceMataData: {

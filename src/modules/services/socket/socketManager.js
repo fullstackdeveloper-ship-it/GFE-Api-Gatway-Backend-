@@ -1,4 +1,4 @@
-const { processPowerFlowData } = require('../../../utils/powerFlowUtils');
+const { processPowerFlowData } = require('../../utils/powerFlowUtils');
 
 class SocketManager {
   constructor() {
@@ -150,6 +150,7 @@ class SocketManager {
     try {
       const arr = Array.isArray(payload?.data) ? payload.data : [];
       console.log(`📊 Processing ${arr.length} sensor entries...`);
+      console.log(`📋 Complete payload:`, JSON.stringify(payload, null, 2));
       
       for (const entry of arr) {
         const meta = entry.deviceMataData || entry.deviceMetaData || {};
@@ -158,10 +159,13 @@ class SocketManager {
 
         if (!deviceName || !dict || typeof dict !== 'object') {
           console.log(`⚠️ Skipping invalid entry: deviceName=${deviceName}, dict=${typeof dict}`);
+          console.log(`⚠️ Invalid entry data:`, JSON.stringify(entry, null, 2));
           continue;
         }
 
         console.log(`📡 Emitting data for device: ${deviceName}`);
+        console.log(`📊 Device metadata:`, JSON.stringify(meta, null, 2));
+        console.log(`📊 Register data:`, JSON.stringify(dict, null, 2));
         // Only emit to subscribers of this device
         this.emitSensorToDevice(deviceName, dict);
       }

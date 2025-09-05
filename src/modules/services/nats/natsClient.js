@@ -128,7 +128,7 @@ class NatsClient {
             const data = StringCodec().decode(msg.data);
             const parsedData = JSON.parse(data);
             
-            console.log(`📨 Received message on ${subject}:`, parsedData);
+            console.log(`📨 Received message on ${subject}:`, JSON.stringify(parsedData, null, 2));
             
             // Call the callback with the parsed data
             if (typeof callback === 'function') {

@@ -9,7 +9,7 @@ const fs = require('fs').promises;
 // Import modules
 const config = require('../config/settings');
 const services = require('../services');
-const routes = require('../api/routes');
+const routes = require('../../api/routes');
 const middleware = require('../middleware');
 const controllers = require('../controllers');
 
@@ -198,7 +198,7 @@ class Server {
   handleSensorData(data) {
     try {
       // Process sensor data through socket manager
-      services.socket.SocketManager.handleSensorData(data);
+      services.socket.SocketManager.handleUpstreamSensorBatch(data);
     } catch (error) {
       console.error('Error handling sensor data:', error);
     }
