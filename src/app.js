@@ -18,6 +18,7 @@ const networkManager = require('./services/network/networkManager');
 const serialManager = require('./services/serial/serialManager');
 const PowerFlowSocketService = require('./services/powerFlowSocketService');
 const AutoTableCreationService = require('./services/autoTableCreationService');
+const DatabaseService = require('./services/databaseService');
 
 const deviceRoutes = require('./api/routes/devices');
 const connectivityRoutes = require('./api/routes/connectivity');
@@ -717,6 +718,17 @@ function handleSensorData(data) {
 // Initialize Power Flow Socket Service
 let powerFlowSocketService;
 let autoTableCreationService;
+let databaseService;
+
+async function initDatabaseService() {
+  try {
+    databaseService = DatabaseService.getInstance();
+    console.log('✅ Database Service (Singleton) initialized successfully');
+  } catch (error) {
+    console.error('❌ Failed to initialize Database Service:', error);
+    throw error; // This is critical, so we should fail startup
+  }
+}
 
 async function initPowerFlowSocketService() {
   try {
@@ -751,6 +763,9 @@ async function startServer() {
     console.log(`NATS Topic: ${config.NATS_TOPIC}`);
     console.log(`NATS Control Response Topic: ${process.env.NATS_CONTROL_RESPONSE_TOPIC || 'control.response'}`);
 
+    // Initialize Database Service first (critical for all other services)
+    await initDatabaseService();
+
     // Initialize Auto Table Creation Service (before NATS)
     await initAutoTableCreationService();
 
@@ -783,6 +798,10 @@ process.on('SIGINT', async () => {
     
     if (autoTableCreationService) {
       await autoTableCreationService.shutdown();
+    }
+    
+    if (databaseService) {
+      await databaseService.close();
     }
     
     server.close(() => {

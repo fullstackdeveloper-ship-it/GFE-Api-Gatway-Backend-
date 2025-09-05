@@ -1,68 +1,24 @@
 const fs = require('fs');
 const path = require('path');
 const yaml = require('js-yaml');
-const sqlite3 = require('sqlite3').verbose();
+const DatabaseService = require('./databaseService');
 
 class DeviceTableService {
   constructor() {
     this.blueprintPath = process.env.BLUEPRINT_PATH || './gfe-iot/blueprints';
-    this.globalDbPath = process.env.GLOBAL_DB_PATH || '/home/gfe/Desktop/Project/Green_Project/data/sqlite/power_flow.db';
     this.blueprintCache = new Map();
     
-    this.ensureDataDirectory();
-    this.initializeDatabase();
+    // Use singleton database service
+    this.databaseService = DatabaseService.getInstance();
+    this.db = this.databaseService.getConnection();
   }
 
-  ensureDataDirectory() {
-    const dataDir = path.dirname(this.globalDbPath);
-    if (!fs.existsSync(dataDir)) {
-      fs.mkdirSync(dataDir, { recursive: true });
+  // Ensure database connection is ready
+  ensureConnection() {
+    if (!this.databaseService.isDatabaseConnected()) {
+      throw new Error('Database not connected. Please wait for database initialization.');
     }
-  }
-
-  initializeDatabase() {
-    this.db = new sqlite3.Database(this.globalDbPath, (err) => {
-      if (err) {
-        console.error('❌ Global database connection error:', err);
-      } else {
-        console.log('✅ Connected to global database: ' + this.globalDbPath);
-        this.setupPragmas();
-        this.createDeviceTablesTable();
-      }
-    });
-  }
-
-  setupPragmas() {
-    this.db.run('PRAGMA foreign_keys = OFF');
-    this.db.run('PRAGMA journal_mode = WAL');
-    this.db.run('PRAGMA synchronous = NORMAL');
-    this.db.run('PRAGMA cache_size = 2000');
-    this.db.run('PRAGMA temp_store = MEMORY');
-    this.db.run('PRAGMA mmap_size = 268435456');
-    this.db.run('PRAGMA page_size = 4096');
-    this.db.run('PRAGMA auto_vacuum = INCREMENTAL');
-    this.db.run('PRAGMA busy_timeout = 30000');
-    this.db.run('PRAGMA locking_mode = NORMAL');
-  }
-
-  createDeviceTablesTable() {
-    const query = `
-      CREATE TABLE IF NOT EXISTS device_tables (
-        device_name TEXT PRIMARY KEY,
-        device_type TEXT NOT NULL,
-        reference TEXT NOT NULL,
-        table_name TEXT NOT NULL,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-      )
-    `;
-    
-    this.db.run(query, (err) => {
-      if (err) {
-        console.error('❌ Error creating device_tables:', err);
-      } else {
-        console.log('✅ Device tables metadata table ready');
-      }
-    });
+    return this.db;
   }
 
   async loadBlueprint(reference) {
@@ -228,15 +184,9 @@ class DeviceTableService {
   }
 
   close() {
-    if (this.db) {
-      this.db.close((err) => {
-        if (err) {
-          console.error('❌ Error closing global database:', err);
-        } else {
-          console.log('✅ Global database connection closed');
-        }
-      });
-    }
+    // No need to close database connection as it's managed by singleton
+    // The singleton will handle connection lifecycle
+    console.log('✅ DeviceTableService closed (database connection managed by singleton)');
   }
 }
 
